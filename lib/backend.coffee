@@ -18,7 +18,7 @@ module.exports = backend =
       return callback new Error 'Unexpected error' if err? and err.code != 'EEXIST'
 
       # TODO: Abort request if size is too big
-      request = request { url, encoding: null }, (err, response, body) ->
+      request { url, encoding: null }, (err, response, body) ->
         return callback new Error 'Failed to download asset' if err? or response.statusCode != 200
 
         # TODO: Implement support for other asset types
@@ -29,6 +29,8 @@ module.exports = backend =
             return
 
           callback null
+
+      return
 
   createObject: (projectId, name, assetName, callback) ->
     return callback new Error "Invalid object name" if ! backend.nameRegex.test name
