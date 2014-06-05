@@ -1,4 +1,8 @@
 module.exports =
+  internalPort: 
+  publicPort: 
+  domain: 
+
   twitter:
     consumerKey: 
     consumerSecret: 
