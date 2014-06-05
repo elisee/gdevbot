@@ -1,0 +1,8 @@
+module.exports =
+  twitter:
+    consumerKey: 
+    consumerSecret: 
+    accessToken : 
+    accessTokenSecret: 
+    userId: 
+    username: 
