@@ -6,6 +6,8 @@
   "author": "Elisée Maurer <elisee@sparklinlabs.com>",
   "dependencies": {
     "coffee-script": "^1.7.1",
-    "node-twitter-api": "^1.2.2"
+    "node-twitter-api": "^1.2.2",
+    "gm": "^1.16.0",
+    "request": "^2.36.0"
   }
 }

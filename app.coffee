@@ -1,7 +1,6 @@
 config = require './config'
-
-botlog = (message) -> console.log ( new Date() ).toISOString() + " - #{message}"
-debuglog = (message) -> console.log 'DEBUG! ' + ( new Date() ).toISOString() + " - #{message}"
+utils = require './lib/utils'
+backend = require './lib/backend'
 
 twitterAPI = require 'node-twitter-api'
 twitter = new twitterAPI config.twitter
@@ -10,26 +9,63 @@ baseURL = "http://#{config.domain}"
 baseURL += ":#{config.publicPort}" if config.publicPort != 80
 
 
-parseCommand = (text, projectId, callback) ->
-  # TODO: Parse the text into a command description
+parseCommand = (text, callback) ->
   command = {}
+
+  tokens = text.split ' '
+
+  command.type = tokens[0]
+
+  switch tokens[0]
+    when 'import'
+      return callback new Error "Invalid arguments" if tokens.length != 4
+
+      command.url = tokens[1]
+      return callback new Error "Syntax error, expected 'as'" if tokens[2] != 'as'
+      command.name = tokens[3]
+
+    when 'create'
+      return callback new Error "Invalid arguments" if tokens.length != 4
+
+      command.asset = tokens[1]
+      return callback new Error "Syntax error, expected 'named'" if tokens[2] != 'named'
+      command.name = tokens[3]
+
+    else
+      return callback new Error "No such command"
 
   callback null, command
 
 
+executeCommand = (command, projectId, callback) ->
+  switch command.type
+    when 'import'
+      backend.importAsset projectId, command.name, command.url, callback
+
+    when 'create'
+      backend.createObject projectId, command.name, command.asset, callback
+
+  return
+
+
 logTweetFail = (err) ->
   return if ! err?
-  botlog "Could not tweet:\n#{JSON.stringify(err, null, 2)}"
+  utils.botlog "Could not tweet:\n#{JSON.stringify(err, null, 2)}"
 
-replyCommandTweet = (status, replyTweetId, callback) ->
-  twitter.statuses 'update', { status: status, in_reply_to_status_id: replyTweetId }, config.twitter.accessToken, config.twitter.accessTokenSecret, (err) ->
-    err.tweet = { status, replyTweetId } if err?
+tweetCommandFailed = (username, reason, replyTweetId, callback) ->
+  twitter.statuses 'update', { status: "@#{username} ERR #{reason}", in_reply_to_status_id: replyTweetId }, config.twitter.accessToken, config.twitter.accessTokenSecret, (err) ->
+    err.tweet = { type: 'failure', reason, replyTweetId } if err?
+    callback err
+
+tweetCommandSuccess = (username, projectId, replyTweetId, callback) ->
+  twitter.statuses 'update', { status: "@#{username} OK #{baseURL}/p/#{projectId}", in_reply_to_status_id: replyTweetId }, config.twitter.accessToken, config.twitter.accessTokenSecret, (err) ->
+    err.tweet = { type: 'success', replyTweetId } if err?
     callback err
 
 dataCallback = (err, data, chunk, response) ->
-  return botlog JSON.stringify err, null, 2 if err?
+  return utils.botlog JSON.stringify err, null, 2 if err?
 
-  debuglog JSON.stringify data, null, 2
+  # utils.debuglog JSON.stringify data, null, 2
 
   # Ignore non-tweets
   return if ! data.text? or ! data.user?
@@ -45,7 +81,7 @@ dataCallback = (err, data, chunk, response) ->
   # Ensure the tweet isn't trying to mess with us
   return if data.text.split('@').length - 1 > 1 or data.text.split('#').length - 1 > 1
 
-  botlog "#{data.user.screen_name}: #{data.text}"
+  utils.botlog "#{data.user.screen_name}: #{data.text}"
 
   commandText = data.text
 
@@ -60,25 +96,20 @@ dataCallback = (err, data, chunk, response) ->
   commandText = commandText.slice(0, projectHashtagIndex) + commandText.slice(projectHashtagIndex + 1 + projectId.length)
 
   commandText = commandText.trim().replace(/\s{2,}/g, ' ')
-  botlog "[#{projectId}] #{data.user.screen_name}: #{commandText}"
+  utils.botlog "[#{projectId}] #{data.user.screen_name}: #{commandText}"
 
   replyTweetId = data.id_str
 
-  parseCommand commandText, projectId, (err, command) ->
-    if err?
-      status = "@#{data.user.screen_name} ERR #{err.message}"
-      replyCommandTweet status, replyTweetId, logTweetFail
-      return
+  parseCommand commandText, (err, command) ->
+    return tweetCommandFailed data.user.screen_name, err.message, replyTweetId, logTweetFail if err?
 
-    # TODO: Apply command
-
-    if ! command.silent
-      status = "@#{data.user.screen_name} OK #{baseURL}/p/#{projectId}"
-      replyCommandTweet status, replyTweetId, logTweetFail
+    executeCommand command, projectId, (err) ->
+      return tweetCommandFailed data.user.screen_name, err.message, replyTweetId, logTweetFail if err?
+      tweetCommandSuccess data.user.screen_name, projectId, replyTweetId, logTweetFail
 
     return
 
-endCallback = -> botlog "Stream ended, somehow."
+endCallback = -> utils.botlog "Stream ended, somehow."
 
 twitter.getStream 'userstream', {}, config.twitter.accessToken, config.twitter.accessTokenSecret, dataCallback, endCallback
-botlog "Started."
+utils.botlog "Started."
