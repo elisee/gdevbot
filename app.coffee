@@ -13,16 +13,15 @@ parseCommand = (text, callback) ->
   command = {}
 
   tokens = text.split ' '
-
   command.type = tokens[0]
 
   switch tokens[0]
     when 'import'
       return callback new Error "Invalid arguments" if tokens.length != 4
 
-      command.url = tokens[1]
-      return callback new Error "Syntax error, expected 'as'" if tokens[2] != 'as'
-      command.name = tokens[3]
+      command.name = tokens[1]
+      return callback new Error "Syntax error, expected 'from'" if tokens[2] != 'from'
+      command.url = tokens[3]
 
     when 'create'
       return callback new Error "Invalid arguments" if tokens.length != 4
@@ -84,6 +83,11 @@ dataCallback = (err, data, chunk, response) ->
   utils.botlog "#{data.user.screen_name}: #{data.text}"
 
   commandText = data.text
+
+  # Replace any Twitter photo link by the actual image URL
+  if data.entities.media? and data.entities.media.length == 1 and data.entities.media[0].type == 'photo'
+    photo = data.entities.media[0]
+    commandText = commandText.slice(0, photo.indices[0]) + photo.media_url + commandText.slice(photo.indices[1])
 
   # Remove the bot mention
   botMention = data.entities.user_mentions[0]
