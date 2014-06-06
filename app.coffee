@@ -23,6 +23,12 @@ parseCommand = (text, callback) ->
       return callback new Error "Syntax error, expected 'from'" if tokens[2] != 'from'
       command.url = tokens[3]
 
+    when 'script'
+      return callback new Error "Expected a script after name" if tokens.length < 3
+
+      command.name = tokens[1]
+      command.content = tokens.slice(2).join ' '
+
     when 'create'
       return callback new Error "Invalid arguments" if tokens.length != 4
 
@@ -40,6 +46,9 @@ executeCommand = (command, projectId, callback) ->
   switch command.type
     when 'import'
       backend.importAsset projectId, command.name, command.url, callback
+
+    when 'script'
+      backend.addScript projectId, command.name, command.content, callback
 
     when 'create'
       backend.createObject projectId, command.name, command.asset, callback

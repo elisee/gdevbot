@@ -1,11 +1,12 @@
 utils = require './utils'
-fs = require 'fs'
+parseScript = require './parseScript'
+mkdirp = require 'mkdirp'
 path = require 'path'
 request = require 'request'
 gm = require 'gm'
+fs = require 'fs'
 
-try fs.mkdirSync path.join __dirname, '..', 'public'
-try fs.mkdirSync path.join __dirname, '..', 'public', 'data'
+try mkdirp.sync path.join __dirname, '..', 'public', 'data'
 
 module.exports = backend =
 
@@ -14,7 +15,7 @@ module.exports = backend =
   importAsset: (projectId, name, url, callback) ->
     return callback new Error "Invalid asset name" if ! backend.nameRegex.test name
 
-    fs.mkdir path.join(__dirname, '..', 'public', 'data', projectId), (err) ->
+    mkdirp path.join(__dirname, '..', 'public', 'data', projectId.toLowerCase(), 'assets'), (err) ->
       return callback new Error 'Unexpected error' if err? and err.code != 'EEXIST'
 
       # TODO: Abort request if size is too big
@@ -22,7 +23,7 @@ module.exports = backend =
         return callback new Error 'Failed to download asset' if err? or response.statusCode != 200
 
         # TODO: Implement support for other asset types
-        gm(body).resize(1024,1024).write path.join(__dirname, '..', 'public', 'data', projectId, "#{name}.png"), (err) ->
+        gm(body).resize(1024,1024).write path.join(__dirname, '..', 'public', 'data', projectId.toLowerCase(), 'assets', "#{name}.png"), (err) ->
           if err?
             utils.botlog JSON.stringify err, null, 2
             callback new Error 'Failed to import asset'
@@ -31,6 +32,27 @@ module.exports = backend =
           callback null
 
       return
+
+  addScript: (projectId, name, content, callback) ->
+    return callback new Error "Invalid script name" if ! backend.nameRegex.test name
+
+    parseScript name, content, (err, script) ->
+      if err?
+        utils.botlog JSON.stringify err, null, 2
+        callback new Error 'Failed to parse script'
+        return
+
+      assetsPath = path.join(__dirname, '..', 'public', 'data', projectId.toLowerCase(), 'assets')
+      mkdirp assetsPath, (err) ->
+        return callback new Error 'Unexpected error' if err? and err.code != 'EEXIST'
+
+        fs.writeFile path.join(assetsPath, name + ".js"), script, (err) ->
+          if err?
+            utils.botlog JSON.stringify err, null, 2
+            callback new Error 'Failed to save script'
+            return
+
+          callback null
 
   createObject: (projectId, name, assetName, callback) ->
     return callback new Error "Invalid object name" if ! backend.nameRegex.test name
