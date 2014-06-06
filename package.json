@@ -6,7 +6,7 @@
   "author": "Elisée Maurer <elisee@sparklinlabs.com>",
   "dependencies": {
     "coffee-script": "^1.7.1",
-    "node-twitter-api": "^1.2.2",
+    "node-twitter-api": "git://github.com/elisee/node-twitter-api.git#909e97ad120fdbf949c507957ae05742a5c93675",
     "gm": "^1.16.0",
     "request": "^2.36.0"
   }
