@@ -92,10 +92,20 @@ setupAPI = ->
   gdev.api.SetPosition = (self, x, y) ->
     self.transform.x = x
     self.transform.y = y
+    return
 
   gdev.api.Move = (self, dx, dy) ->
     self.transform.x += dx
     self.transform.y += dy
+    return
+
+  gdev.api.SetAngle = (self, angle) ->
+    self.transform.angle = angle
+    return
+
+  gdev.api.Rotate = (self, dAngle) ->
+    self.transform.angle += dAngle
+    return
 
 walkActorUpdate = (actor) ->
   behavior.Update actor for behavior in actor.behaviors
@@ -133,9 +143,9 @@ tick = (timestamp) ->
   for actor in gdev.actorsTree.roots
     for sprite in actor.sprites
       ctx.save()
-      ctx.translate -sprite.image.width / 2, -sprite.image.height / 2
+      ctx.translate actor.transform.x, actor.transform.y
       ctx.rotate actor.transform.angle*Math.PI/180
-      ctx.drawImage sprite.image, actor.transform.x, actor.transform.y
+      ctx.drawImage sprite.image, -sprite.image.width / 2, -sprite.image.height / 2
       ctx.restore()
     ctx.fillRect actor.transform.x - 5, actor.transform.y - 5, 10, 10
 
