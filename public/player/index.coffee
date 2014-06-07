@@ -50,6 +50,7 @@ setupActors = (callback) ->
       transform: { x: 0, y: 0, angle: 0 }
       behaviors: []
       sprites: []
+      keys: {}
 
     for componentDef in actorDef.components
       behavior = gdev.behaviors[componentDef.name]
