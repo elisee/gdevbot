@@ -9,6 +9,9 @@
     "node-twitter-api": "git://github.com/elisee/node-twitter-api.git#909e97ad120fdbf949c507957ae05742a5c93675",
     "gm": "^1.16.0",
     "request": "^2.36.0",
-    "mkdirp": "^0.5.0"
+    "mkdirp": "^0.5.0",
+    "express": "^4.4.1",
+    "jade": "^1.3.1",
+    "connect-slashes": "^1.2.0"
   }
 }

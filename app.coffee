@@ -126,3 +126,18 @@ endCallback = -> utils.botlog "Stream ended, somehow."
 
 twitter.getStream 'userstream', {}, config.twitter.accessToken, config.twitter.accessTokenSecret, dataCallback, endCallback
 utils.botlog "Started."
+
+# Web server
+express = require 'express'
+require 'express-expose'
+fs = require 'fs'
+path = require 'path'
+
+app = express()
+app.set 'view engine', 'jade'
+
+app.use express.static __dirname + '/public'
+app.use require('connect-slashes') false
+
+app.get '/', (req, res) -> res.render 'index'
+app.get '/emoji', (req, res) -> res.render 'emoji'

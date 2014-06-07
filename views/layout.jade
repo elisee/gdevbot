@@ -1,0 +1,60 @@
+doctype html
+html
+  head
+    title gdevbot
+    link(href='http://fonts.googleapis.com/css?family=Roboto:400,700',rel='stylesheet',type='text/css')
+    style.
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Roboto';
+        font-size: 18px;
+
+        width: 800px;
+        margin: 2em auto;
+
+        background: #eee;
+        color: #444;
+
+        overflow-y: scroll;
+      }
+
+      a {
+        color: blue;
+      }
+
+      h1 {
+        display: flex;
+        line-height: 1;
+      }
+
+      h1 img { vertical-align: middle; height: 64px; margin-right: 0.5em; border-radius: 0.25em; }
+
+      h2, p { margin-top: 1em; }
+      pre { margin-top: 0.5em; padding: 0.5em; background: #e0e0e0; border-radius: 0.5em; position: relative; }
+      pre.NotYetImplemented:after {
+        position: absolute;
+        top: 0; right: 0;
+        padding: 0.25em;
+        content: 'TODO';
+        font: bold 100% 'Roboto';
+        font-size: 80%;
+        background: #f68;
+        border-radius: 0.5em;
+        -webkit-transform: translateX(20px) translateY(-10px) rotateZ(25deg);
+        -moz-transform: translateX(20px) translateY(-10px) rotateZ(25deg);
+        transform: translateX(20px) translateY(-10px) rotateZ(25deg);
+      }
+  body
+    h1
+      img(src="https://pbs.twimg.com/profile_images/474536274435391488/nf4WB0wW.png")
+      div
+        div @gdevbot
+        <a href="https://twitter.com/gdevbot" class="twitter-follow-button" data-show-count="false" data-lang="en">Follow @gdevbot</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+    block content

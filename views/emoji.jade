@@ -1,0 +1,128 @@
+extends layout
+
+block head
+
+
+block content
+  style.
+    section > .Icon {
+      float: right;
+    }
+
+    pre { z-index: -1; }
+    pre img { width: 36px; vertical-align: bottom; }
+
+    section { clear: both; }
+
+  p <a href="/">Back to home</a>
+
+  h2 Emoji code
+
+  p A tweet-size scripting language for a tweet-based game making tool.
+
+  section
+    h2 Syntax
+
+    p.
+      Each statement should be on its own line.
+      Spaces don't matter except for separating numbers or identifiers.
+      That's pretty much it.
+
+  section
+    img.Icon(src="images/emoji/27b0.png",alt="➰")
+    h2 Always
+    pre :curly_loop:
+
+    p.
+      Any code following the curly loop emoji will be executed every frame for each actor it is attached to.
+
+  section
+    img.Icon(src="images/emoji/1f305.png",alt="🌅")
+    h2 Once
+    pre :sunrise:
+      
+    p.
+      Any code following the sunrise emoji will only be executed once for each actor it is attached to,
+      when the actor is instantiated or when the script gets attached to it.
+
+  section
+    img.Icon(src="images/emoji/1f427.png",alt="🐧")
+    h2 Current actor
+    pre :penguin:
+
+    p.
+      A single script can be attached on a multitude of actors.
+      The penguin emoji represents the actor the script is currently dealing with.
+
+  section
+    img.Icon(src="images/emoji/1f6a9.png",alt="🚩")
+    h2 Position
+    pre :triangular_flag_on_post:
+
+    p.
+      The flag emoji allows you to get or set an actor's position.
+
+    pre
+      @gdevbot 
+      mark #ProjectName
+      |  
+      img(src="images/emoji/1f6a9.png",alt="🚩")
+      mark
+        img(src="images/emoji/1f427.png",alt="🐧")
+      |  
+      mark 20
+      |  
+      mark 30
+
+  section
+    img.Icon(src="images/emoji/1f697.png",alt="🚗")
+    h2 Move
+    pre :car:
+
+    p.
+      The car emoji allows you to move an actor by a certain offset.
+
+    pre
+      @gdevbot 
+      mark #ProjectName
+      |  
+      img(src="images/emoji/27b0.png",alt="➰")
+      img(src="images/emoji/1f697.png",alt="🚗")
+      mark
+        img(src="images/emoji/1f427.png",alt="🐧")
+      |  
+      mark 10
+      |  
+      mark -5
+
+  section
+    .Icon
+      img(src="images/emoji/2753.png",alt="❓")
+    h2 Condition
+    pre :question:
+
+    p.
+      Only execute the statement right after if the condition turns out to be true.
+
+    pre
+      | @gdevbot 
+      mark #ProjectName
+      |  
+      img(src="images/emoji/2753.png",alt="❓")
+      mark condition
+      |  
+      mark statement
+
+
+  section
+    .Icon
+      img(src="images/emoji/23e9.png",alt="⏩")
+      |  
+      img(src="images/emoji/23ea.png",alt="⏩")
+    h2 Code block
+    pre.
+      :fast_forward:
+      :rewind:
+
+    p.
+      Use code blocks to group statements that should be affected by a condition. Or just because it's pretty.
