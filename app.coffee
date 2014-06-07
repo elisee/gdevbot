@@ -88,12 +88,12 @@ logTweetFail = (err) ->
   utils.botlog "Could not tweet:\n#{JSON.stringify(err, null, 2)}"
 
 tweetCommandFailed = (username, reason, replyTweetId, callback) ->
-  twitter.statuses 'update', { status: "@#{username} ERR #{reason}", in_reply_to_status_id: replyTweetId }, config.twitter.accessToken, config.twitter.accessTokenSecret, (err) ->
+  twitter.statuses 'update', { status: "@#{username} ERR #{reason}\n#{replyTweetId.slice(-5)}", in_reply_to_status_id: replyTweetId }, config.twitter.accessToken, config.twitter.accessTokenSecret, (err) ->
     err.tweet = { type: 'failure', reason, replyTweetId } if err?
     callback err
 
 tweetCommandSuccess = (username, projectId, replyTweetId, callback) ->
-  twitter.statuses 'update', { status: "@#{username} OK #{baseURL}/p/#{projectId}", in_reply_to_status_id: replyTweetId }, config.twitter.accessToken, config.twitter.accessTokenSecret, (err) ->
+  twitter.statuses 'update', { status: "@#{username} OK #{baseURL}/p/#{projectId}\n#{replyTweetId.slice(-5)}", in_reply_to_status_id: replyTweetId }, config.twitter.accessToken, config.twitter.accessTokenSecret, (err) ->
     err.tweet = { type: 'success', replyTweetId } if err?
     callback err
 
