@@ -18,6 +18,7 @@ for projectEntry in fs.readdirSync path.join projectsPath
     actorsTree:
       roots: []
       byName: {}
+      parentsByChildName: {}
 
   try assetEntries = fs.readdirSync path.join projectsPath, projectEntry, 'assets'
 
@@ -31,12 +32,13 @@ for projectEntry in fs.readdirSync path.join projectsPath
   if actorsJSON?
     project.actorsTree.roots = JSON.parse actorsJSON
 
-    walkActor = (actor) ->
+    walkActor = (actor, parent) ->
+      project.actorsTree.parentsByChildName[actor.name.toLowerCase()] = parent
       project.actorsTree.byName[actor.name.toLowerCase()] = actor
-      walkActor child for child in actor.children
+      walkActor child, actor for child in actor.children
       return
 
-    walkActor actor for actor in project.actorsTree.roots
+    walkActor actor, null for actor in project.actorsTree.roots
 
 writeActors = (projectId, actors, callback) ->
   fs.writeFile path.join(projectsPath, projectId.toLowerCase(), 'actors.json'), JSON.stringify(actors, null, 2), (err) ->
@@ -132,22 +134,59 @@ module.exports = backend =
   createActor: (projectId, name, parentName, callback) ->
     project = projectsById[projectId.toLowerCase()]
     return process.nextTick( -> callback new Error "No such project" ) if ! project?
-    return process.nextTick( -> callback new Error "Invalid actor name" ) if ! backend.nameRegex.test name
+    return process.nextTick( -> callback new Error "Invalid actor name" ) if name == 'root' or ! backend.nameRegex.test name
     return process.nextTick( -> callback new Error "Actor name is already used" ) if project.actorsTree.byName[name.toLowerCase()]?
 
     actor = { name, children: [], components: [] }
 
-    if parentName?
+    if parentName? and parentName != 'root'
       return process.nextTick( -> callback new Error "Invalid parent name" ) if ! backend.nameRegex.test parentName
 
       parentActor = project.actorsTree.byName[parentName.toLowerCase()]
       return process.nextTick( -> callback new Error "No such parent actor" ) if ! parentActor?
 
-      project.actorsTree.byName[parentName.toLowerCase()].children.push actor
+      parentActor.children.push actor
+      project.actorsTree.parentsByChildName[actor.name.toLowerCase()] = parentActor
     else
       project.actorsTree.roots.push actor
+      project.actorsTree.parentsByChildName[actor.name.toLowerCase()] = null
 
     project.actorsTree.byName[actor.name.toLowerCase()] = actor
+    writeActors projectId, project.actorsTree.roots, callback
+
+  reparentActor: (projectId, name, parentName, callback) ->
+    project = projectsById[projectId.toLowerCase()]
+    return process.nextTick( -> callback new Error "No such project" ) if ! project?
+    return process.nextTick( -> callback new Error "Invalid actor name" ) if ! backend.nameRegex.test name
+
+    actor = project.actorsTree.byName[name.toLowerCase()]
+    return process.nextTick( -> callback new Error "No such actor" ) if ! actor?
+
+    # Remove from old parent
+    oldParent = project.actorsTree.parentsByChildName[actor.name.toLowerCase()]
+    if oldParent?
+      oldParent.children.splice oldParent.children.indexOf(actor), 1
+    else
+      project.actorsTree.roots.splice project.actorsTree.roots.indexOf(actor), 1
+
+    # Add to new parent
+    if parentName? and parentName != 'root'
+      return process.nextTick( -> callback new Error "Invalid parent name" ) if ! backend.nameRegex.test parentName
+
+      parentActor = project.actorsTree.byName[parentName.toLowerCase()]
+      return process.nextTick( -> callback new Error "No such parent actor" ) if ! parentActor?
+
+      ancestorActor = parentActor
+      while ancestorActor?
+        ancestorActor = project.actorsTree.parentsByChildName[ancestorActor.name.toLowerCase()]
+        return process.nextTick( -> callback new Error "Cannot reparent an actor to one of its descendant" ) if ancestorActor == actor
+
+      parentActor.children.push actor
+      project.actorsTree.parentsByChildName[actor.name.toLowerCase()] = parentActor
+    else
+      project.actorsTree.roots.push actor
+      project.actorsTree.parentsByChildName[actor.name.toLowerCase()] = null
+
     writeActors projectId, project.actorsTree.roots, callback
 
   addComponent: (projectId, actorName, assetName, callback) ->
@@ -181,3 +220,4 @@ module.exports = backend =
         return writeActors projectId, project.actorsTree.roots, callback
 
     return process.nextTick( -> callback new Error "No such asset" )
+

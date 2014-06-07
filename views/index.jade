@@ -52,7 +52,7 @@ block content
   pre.
     @gdevbot <mark>#ProjectName</mark> remove <mark>script or image</mark> from <mark>actor</mark>
 
-  h2 Rename, delete, move
+  h2 Rename, move/reparent, delete
 
   p You can rename assets and actors.
 
@@ -64,7 +64,13 @@ block content
     Folders are automatically created and deleted as needed.
 
   pre.NotYetImplemented.
-    @gdevbot <mark>#ProjectName</mark> move <mark>asset or actor</mark> to <mark>folder or parent</mark>
+    @gdevbot <mark>#ProjectName</mark> move <mark>asset</mark> to <mark>folder</mark>
+
+  pre.
+    @gdevbot <mark>#ProjectName</mark> reparent <mark>actor</mark> to <mark>parent</mark>
+
+  p.
+    You can use "root" as the parent name to detach an actor from its parent altogether.
 
   p You can delete them.
 

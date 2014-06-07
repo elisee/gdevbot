@@ -62,6 +62,13 @@ parseCommand = (text, callback) ->
       return callback new Error "Expected 'from' after asset name" if tokens[2] != 'from'
       command.actorName = tokens[3]
 
+    when 'reparent'
+      return callback new Error "Invalid arguments" if tokens.length != 4
+
+      command.name = tokens[1]
+      return callback new Error "Expected 'to' after actor name" if tokens[2] != 'to'
+      command.parentName = tokens[3]
+
     else
       return callback new Error "No such command"
 
@@ -87,6 +94,9 @@ executeCommand = (command, projectId, callback) ->
 
     when 'remove'
       backend.removeComponent projectId, command.actorName, command.assetName, callback
+
+    when 'reparent'
+      backend.reparentActor projectId, command.name, command.parentName, callback
 
   return
 
