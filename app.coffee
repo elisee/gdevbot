@@ -33,12 +33,17 @@ parseCommand = (text, callback) ->
       command.content = tokens.slice(2).join ' '
 
     when 'new'
-      return callback new Error "Invalid arguments" if tokens.length != 3
-
+      return callback new Error "Invalid arguments" if tokens.length < 3
       return callback new Error "Expected 'actor' after 'new'" if tokens[1] != 'actor'
       command.type += " #{tokens[1]}"
 
       command.name = tokens[2]
+
+      if tokens.length == 5
+        return callback new Error "Expected 'parent' after actor name" if tokens[3] != 'parent'
+        command.parentName = tokens[4]
+      else
+        return callback new Error "Invalid arguments" if tokens.length != 3
 
     when 'add'
       return callback new Error "Invalid arguments" if tokens.length != 4
@@ -71,8 +76,8 @@ executeCommand = (command, projectId, callback) ->
     when 'script'
       backend.addScript projectId, command.name, command.content, callback
 
-    when 'new'
-      backend.createActor projectId, command.name, callback
+    when 'new actor'
+      backend.createActor projectId, command.name, command.parentName, callback
 
 
   return

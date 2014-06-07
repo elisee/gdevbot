@@ -6,67 +6,133 @@ request = require 'request'
 gm = require 'gm'
 fs = require 'fs'
 
-try mkdirp.sync path.join __dirname, '..', 'public', 'data'
+projectsPath = path.join __dirname, '..', 'public', 'projects'
+
+try mkdirp.sync projectsPath
+
+projectsById = {}
+
+for projectEntry in fs.readdirSync path.join projectsPath
+  projectsById[projectEntry] = project =
+    assetNames: []
+    actorsTree:
+      roots: []
+      byName: {}
+
+  try assetEntries = fs.readdirSync path.join projectsPath, projectEntry, 'assets'
+
+  if assetEntries?
+    for assetEntry in assetEntries
+      assetName = assetEntry.split('.')[0]
+      project.assetNames.push assetName
+
+  try actorsJSON = fs.readFileSync path.join projectsPath, projectEntry, 'actors.json', encoding: 'utf8'
+
+  if actorsJSON?
+    project.actorsTree.roots = JSON.parse actorsJSON
+    for actor in project.actorsTree.roots
+      project.actorsTree.byName[actor.name] = actor
 
 module.exports = backend =
 
   nameRegex: /^[A-Za-z0-9_]{3,40}$/
 
   createProject: (projectId, callback) ->
-    return callback new Error "Invalid project name" if ! backend.nameRegex.test projectId
+    return process.nextTick( -> callback new Error "Invalid project name" ) if ! backend.nameRegex.test projectId
+    return process.nextTick( -> callback new Error "Project name is already used" ) if projectsById[projectId]?
 
-    fs.exists path.join(__dirname, '..', 'public', 'data', projectId.toLowerCase()), (exists) ->
-      return callback new Error 'Project name already taken' if exists
+    fs.mkdir path.join(projectsPath, projectId.toLowerCase()), (err) ->
+      if err?
+        return callback new Error 'Project name is already used'  if err.code == 'EEXIST'
+        utils.botlog "[#{projectId}] Unexpected error creating project folder:"
+        utils.botlog JSON.stringify err, null, 2
+        return callback new Error 'Unexpected error'
 
-      mkdirp path.join(__dirname, '..', 'public', 'data', projectId.toLowerCase(), 'assets'), (err) ->
-        return callback new Error 'Unexpected error' if err?
-        callback null
+      projectsById[projectId] =
+        assetNames: []
+        actorsTree:
+          roots: []
+          byName: {}
+
+      callback null
 
   importAsset: (projectId, name, url, callback) ->
-    return callback new Error "Invalid asset name" if ! backend.nameRegex.test name
+    project = projectsById[projectId.toLowerCase()]
+    return process.nextTick( -> callback new Error "No such project" ) if ! project?
+    return process.nextTick( -> callback new Error "Invalid asset name" ) if ! backend.nameRegex.test name
+    return process.nextTick( -> callback new Error "Asset name is already used" ) if project.assetNames.indexOf(name) != -1
 
-    mkdirp path.join(__dirname, '..', 'public', 'data', projectId.toLowerCase(), 'assets'), (err) ->
-      return callback new Error 'Unexpected error' if err? and err.code != 'EEXIST'
+    mkdirp path.join(projectsPath, projectId.toLowerCase(), 'assets'), (err) ->
+      if err? and err.code != 'EEXIST'
+        utils.botlog "[#{projectId}] Unexpected error creating assets folder:"
+        utils.botlog JSON.stringify err, null, 2
+        return callback new Error 'Unexpected error' if err? 
 
       # TODO: Abort request if size is too big
       request { url, encoding: null }, (err, response, body) ->
         return callback new Error 'Failed to download asset' if err? or response.statusCode != 200
 
         # TODO: Implement support for other asset types
-        gm(body).resize(1024,1024).write path.join(__dirname, '..', 'public', 'data', projectId.toLowerCase(), 'assets', "#{name}.png"), (err) ->
+        gm(body).resize(1024,1024).write path.join(projectsPath, projectId.toLowerCase(), 'assets', "#{name}.png"), (err) ->
           if err?
+            utils.botlog "[#{projectId}] Error processing import of #{url}:"
             utils.botlog JSON.stringify err, null, 2
-            callback new Error 'Failed to import asset'
-            return
+            return callback new Error 'Failed to import asset'
 
           callback null
 
       return
 
   addScript: (projectId, name, content, callback) ->
-    return callback new Error "Invalid script name" if ! backend.nameRegex.test name
+    project = projectsById[projectId.toLowerCase()]
+    return process.nextTick( -> callback new Error "No such project" ) if ! project?
+    return process.nextTick( -> callback new Error "Invalid script name" ) if ! backend.nameRegex.test name
+    return process.nextTick( -> callback new Error "Script name is already used" ) if project.assetNames.indexOf(name) != -1
 
     parseScript name, content, (err, script) ->
       if err?
+        utils.botlog "[#{projectId}] Error parsing script #{name}:"
         utils.botlog JSON.stringify err, null, 2
         callback new Error 'Failed to parse script'
         return
 
-      assetsPath = path.join(__dirname, '..', 'public', 'data', projectId.toLowerCase(), 'assets')
+      assetsPath = path.join(projectsPath, projectId.toLowerCase(), 'assets')
       mkdirp assetsPath, (err) ->
         return callback new Error 'Unexpected error' if err? and err.code != 'EEXIST'
 
         fs.writeFile path.join(assetsPath, name + ".js"), script, (err) ->
           if err?
+            utils.botlog "[#{projectId}] Error writing script #{name}:"
             utils.botlog JSON.stringify err, null, 2
             callback new Error 'Failed to save script'
             return
 
           callback null
 
-  createActor: (projectId, name, assetName, callback) ->
-    return callback new Error "Invalid actor name" if ! backend.nameRegex.test name
-    return callback new Error "Invalid asset name" if ! backend.nameRegex.test assetName
+  createActor: (projectId, name, parentName, callback) ->
+    project = projectsById[projectId.toLowerCase()]
+    return process.nextTick( -> callback new Error "No such project" ) if ! project?
+    return process.nextTick( -> callback new Error "Invalid actor name" ) if ! backend.nameRegex.test name
+    return process.nextTick( -> callback new Error "Actor name is already used" ) if project.actorsTree.byName[name]?
 
-    # TODO: Implement creating an actor
-    callback null
+    actor = { name, children: [] }
+
+    if parentName?
+      return process.nextTick( -> callback new Error "Invalid parent name" ) if ! backend.nameRegex.test parentName
+
+      parentActor = project.actorsTree.byName[parentName]
+      return process.nextTick( -> callback new Error "No such parent actor" ) if ! parentActor?
+
+      project.actorsTree.byName[parentName].children.push actor
+    else
+      project.actorsTree.roots.push actor
+
+    project.actorsTree.byName[actor.name] = actor
+
+    fs.writeFile path.join(projectsPath, projectId.toLowerCase(), 'actors.json'), JSON.stringify(project.actorsTree.roots, null, 2), (err) ->
+      if err?
+        utils.botlog "[#{projectId}] Error saving actors.json:"
+        utils.botlog JSON.stringify err, null, 2
+        callback new Error 'Actor created but file could not be written'
+
+      callback null
