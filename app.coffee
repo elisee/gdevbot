@@ -168,3 +168,20 @@ app.use require('connect-slashes') false
 
 app.get '/', (req, res) -> res.render 'index'
 app.get '/emoji', (req, res) -> res.render 'emoji'
+
+app.get '/p/:projectId', (req, res) ->
+  fs.readdir path.join(__dirname, 'public', 'projects', req.params.projectId.toLowerCase(), 'assets'), (err, assets) ->
+    return console.log err.stack if err?
+
+    fs.readFile path.join(__dirname, 'public', 'projects', req.params.projectId.toLowerCase(), 'actors.json'), encoding: 'utf8', (err, actorsJSON) ->
+      return console.log err.stack if err?
+
+      project =
+        projectId: req.params.projectId
+        assets: assets
+        actors: JSON.parse actorsJSON
+
+      res.expose project
+      res.render 'game', projectId: req.params.projectId
+
+app.listen config.internalPort

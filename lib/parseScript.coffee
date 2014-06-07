@@ -99,13 +99,13 @@ module.exports = (name, content, callback) ->
         console.log activeCodeBlock
 
       when 'position'
-        codeBlocks[activeCodeBlock] += "gdevAPI.SetPosition(#{consumeExpression()}, #{consumeExpression()}, #{consumeExpression()});"
+        codeBlocks[activeCodeBlock] += "gdev.api.SetPosition(#{consumeExpression()}, #{consumeExpression()}, #{consumeExpression()});"
       when 'move'
-        codeBlocks[activeCodeBlock] += "gdevAPI.Move(#{consumeExpression()}, #{consumeExpression()}, #{consumeExpression()});"
+        codeBlocks[activeCodeBlock] += "gdev.api.Move(#{consumeExpression()}, #{consumeExpression()}, #{consumeExpression()});"
       when 'angle'
-        codeBlocks[activeCodeBlock] += "gdevAPI.SetAngle(#{consumeExpression()}, #{consumeExpression()});"
+        codeBlocks[activeCodeBlock] += "gdev.api.SetAngle(#{consumeExpression()}, #{consumeExpression()});"
       when 'rotate'
-        codeBlocks[activeCodeBlock] += "gdevAPI.Rotate(#{consumeExpression()}, #{consumeExpression()});"
+        codeBlocks[activeCodeBlock] += "gdev.api.Rotate(#{consumeExpression()}, #{consumeExpression()});"
 
       when 'if'
         codeBlocks[activeCodeBlock] += "if(#{consumeExpression()})"
@@ -189,10 +189,10 @@ module.exports = (name, content, callback) ->
   generateCode()
 
   # Finish up the script
-  codeBlocks.awake = "Behavior_#{name}.Awake = function(self) {\n#{codeBlocks.awake}\n}"
-  codeBlocks.update = "Behavior_#{name}.Update = function(self) {\n#{codeBlocks.update}\n}"
+  codeBlocks.awake = "behavior_#{name}.Awake = function(self) {\n#{codeBlocks.awake}\n}"
+  codeBlocks.update = "behavior_#{name}.Update = function(self) {\n#{codeBlocks.update}\n}"
 
-  script = "var Behavior_#{name} = {};" 
-  script = [ script, codeBlocks.init, codeBlocks.awake, codeBlocks.update ].join '\n'
+  script = "var behavior_#{name} = gdev.behaviors.#{name} = {};" 
+  script = [ '(function(){', script, codeBlocks.init, codeBlocks.awake, codeBlocks.update, '})();' ].join '\n'
 
   callback null, script

@@ -1,0 +1,36 @@
+doctype html
+html
+  head
+    title #{projectId} - gdevbot
+    style.
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      } 
+
+      #Loader {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    script!=javascript
+
+  body
+    canvas
+    #Loader
+      progress
+    script(src="/player/index.js")

@@ -120,7 +120,7 @@ module.exports = backend =
     return process.nextTick( -> callback new Error "Invalid actor name" ) if ! backend.nameRegex.test name
     return process.nextTick( -> callback new Error "Actor name is already used" ) if project.actorsTree.byName[name.toLowerCase()]?
 
-    actor = { name, children: [] }
+    actor = { name, children: [], components: [] }
 
     if parentName?
       return process.nextTick( -> callback new Error "Invalid parent name" ) if ! backend.nameRegex.test parentName
