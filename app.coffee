@@ -23,7 +23,7 @@ parseCommand = (text, callback) ->
       return callback new Error "Invalid arguments" if tokens.length != 4
 
       command.name = tokens[1]
-      return callback new Error "Syntax error, expected 'from'" if tokens[2] != 'from'
+      return callback new Error "Expected 'from' after name" if tokens[2] != 'from'
       command.url = tokens[3]
 
     when 'script'
