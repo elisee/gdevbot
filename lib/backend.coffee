@@ -93,7 +93,7 @@ module.exports = backend =
         return callback new Error 'Failed to download asset' if err? or response.statusCode != 200
 
         # TODO: Implement support for other asset types
-        gm(body).resize(1024,1024).write path.join(projectsPath, projectId.toLowerCase(), 'assets', "#{name}.png"), (err) ->
+        gm(body).resize(1024,1024,'>').write path.join(projectsPath, projectId.toLowerCase(), 'assets', "#{name}.png"), (err) ->
           if err?
             utils.botlog "[#{projectId}] Error processing import of #{url}:"
             utils.botlog JSON.stringify err, null, 2
