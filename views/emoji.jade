@@ -19,21 +19,25 @@ block content
     Put each statement on its own line.
 
   section
-    img.Icon(src="images/emoji/27b0.png",alt="➰")
-    h2 Always
-    pre :curly_loop:
+    .Icon
+      img(src="images/emoji/1f305.png",alt="🌅")
+      |  
+      img(src="images/emoji/27b0.png",alt="➰")
+    h2 Init, Once, Always
+    pre :sunrise: :curly_loop:
 
     p.
-      Any code following the curly loop emoji will be executed every frame for each actor it is attached to.
+      By default, your code will be executed a single time as soon as the game is loaded.
+      This is useful for global initialization code that isn't linked to any actor.
 
-  section
-    img.Icon(src="images/emoji/1f305.png",alt="🌅")
-    h2 Once
-    pre :sunrise:
-      
     p.
-      Any code following the sunrise emoji will only be executed once for each actor it is attached to,
+      Code located after the sunrise emoji will be executed once for each actor it is attached to,
       when the actor is instantiated or when the script gets attached to it.
+
+    p.
+      Code located after the curly loop emoji will be executed every frame for each actor it is attached to.
+
+
 
   section
     img.Icon(src="images/emoji/1f427.png",alt="🐧")
@@ -45,18 +49,17 @@ block content
       The penguin emoji represents the actor the script is currently dealing with.
 
   section
-    img.Icon(src="images/emoji/1f6a9.png",alt="🚩")
-    h2 Position
-    pre :triangular_flag_on_post:
+    .Icon
+      img(src="images/emoji/1f6a9.png",alt="🚩")
+      |  
+      img(src="images/emoji/1f697.png",alt="🚗")
+    h2 Position, Move
+    pre :triangular_flag_on_post: :car:
 
     p.
-      Get or set an actor's position.
+      Use the flag to set or get an actor's position.
 
     pre
-      | @gdevbot 
-      mark #ProjectName
-      |  
-      img(src="images/emoji/1f305.png",alt="🌅")
       img(src="images/emoji/1f6a9.png",alt="🚩")
       mark
         img(src="images/emoji/1f427.png",alt="🐧")
@@ -65,19 +68,10 @@ block content
       |  
       mark 30
 
-  section
-    img.Icon(src="images/emoji/1f697.png",alt="🚗")
-    h2 Move
-    pre :car:
-
     p.
-      Move an actor by a certain offset.
+      Use the car to move an actor by a certain offset.
 
     pre
-      | @gdevbot 
-      mark #ProjectName
-      |  
-      img(src="images/emoji/27b0.png",alt="➰")
       img(src="images/emoji/1f697.png",alt="🚗")
       mark
         img(src="images/emoji/1f427.png",alt="🐧")
@@ -85,6 +79,81 @@ block content
       mark 10
       |  
       mark -5
+
+  section
+    .Icon
+      img(src="images/emoji/2b55.png",alt="⭕")
+      |  
+      img(src="images/emoji/1f503.png",alt="🔃")
+    h2 Angle, Rotate
+
+    pre.
+      :o: :arrows_clockwise:
+
+    p.
+      Use the circle to set or get an actor's angle.
+
+    pre
+      img(src="images/emoji/2b55.png",alt="🚩")
+      mark
+        img(src="images/emoji/1f427.png",alt="🐧")
+      |  
+      mark 45
+
+    p.
+      Use the clockwise arrows to rotate an actor.
+
+    pre
+      img(src="images/emoji/1f503.png",alt="🔃")
+      mark
+        img(src="images/emoji/1f427.png",alt="🐧")
+      |  
+      mark 5
+
+  section
+    img.Icon(src="images/emoji/1f511.png",alt="🔑 ")
+    h2 Key
+    pre :key:
+
+    p.
+      The key lets you access properties of an object.
+
+    p.
+      For instance, you can access the x or y component of a position.
+
+    pre
+      mark
+        img(src="images/emoji/1f6a9.png",alt="🚩")
+      mark
+        img(src="images/emoji/1f427.png",alt="🐧")
+      img(src="images/emoji/2702.png",alt="✂")
+      img(src="images/emoji/1f511.png",alt="🔑 ")
+      mark
+        | x
+
+    p.
+      See below for an explanation about the scissors and why they're required.
+
+  section
+    img.Icon(src="images/emoji/1f6c4.png",alt="🛄 ")
+    h2 Assignment
+    pre :baggage_claim:
+
+    p.
+      You can assign values to properties:
+
+    pre
+      img(src="images/emoji/1f6c4.png",alt="🛄 ")
+      mark
+        img(src="images/emoji/1f427.png",alt="🐧")
+      img(src="images/emoji/1f511.png",alt="🔑 ")
+      |  
+      mark prop
+      |  
+      mark 5
+
+    p.
+      A value can be any expression and you can use common arithmetic operators.
 
   section
     .Icon
@@ -96,14 +165,13 @@ block content
       Only execute the statement right after if the condition turns out to be true.
 
     pre
-      | @gdevbot 
-      mark #ProjectName
-      |  
       img(src="images/emoji/2753.png",alt="❓")
       mark condition
       |  
       mark statement
 
+    p.
+      You can use common comparison operators.
 
   section
     .Icon
@@ -111,9 +179,21 @@ block content
       |  
       img(src="images/emoji/23ea.png",alt="⏩")
     h2 Code block
-    pre.
-      :fast_forward:
-      :rewind:
+    pre :fast_forward: :rewind:
 
     p.
       Group statements that should be affected by a condition. Or just because it's pretty.
+
+  section
+    img.Icon(src="images/emoji/2702.png",alt="✂")
+    h2 End of expression
+    pre :scissors:
+
+    p.
+      Since emoji code doesn't use parentheses to delimit expressions,
+      you will sometime need to use the scissors to explicitly mark the end of an expression.
+
+    p.
+      If we didn't use the scissors in the Key example above, the code would be interpreted by
+      the engine to mean "position of the property x of the penguin", instead of "property x
+      of the position of the penguin".
