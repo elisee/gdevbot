@@ -62,7 +62,7 @@ module.exports = backend =
         utils.botlog JSON.stringify err, null, 2
         return callback new Error 'Unexpected error'
 
-      projectsById[projectId] = project =
+      projectsById[projectId.toLowerCase()] = project =
         assetNames: []
         actorsTree:
           roots: []
