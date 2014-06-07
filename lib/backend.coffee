@@ -24,14 +24,19 @@ for projectEntry in fs.readdirSync path.join projectsPath
   if assetEntries?
     for assetEntry in assetEntries
       assetName = assetEntry.split('.')[0]
-      project.assetNames.push assetName
+      project.assetNames.push assetName.toLowerCase()
 
-  try actorsJSON = fs.readFileSync path.join projectsPath, projectEntry, 'actors.json', encoding: 'utf8'
+  try actorsJSON = fs.readFileSync path.join(projectsPath, projectEntry, 'actors.json'), encoding: 'utf8'
 
   if actorsJSON?
     project.actorsTree.roots = JSON.parse actorsJSON
-    for actor in project.actorsTree.roots
-      project.actorsTree.byName[actor.name] = actor
+
+    walkActor = (actor) ->
+      project.actorsTree.byName[actor.name.toLowerCase()] = actor
+      walkActor child for child in actor.children
+      return
+
+    walkActor actor for actor in project.actorsTree.roots
 
 module.exports = backend =
 
@@ -60,7 +65,7 @@ module.exports = backend =
     project = projectsById[projectId.toLowerCase()]
     return process.nextTick( -> callback new Error "No such project" ) if ! project?
     return process.nextTick( -> callback new Error "Invalid asset name" ) if ! backend.nameRegex.test name
-    return process.nextTick( -> callback new Error "Asset name is already used" ) if project.assetNames.indexOf(name) != -1
+    return process.nextTick( -> callback new Error "Asset name is already used" ) if project.assetNames.indexOf(name.toLowerCase()) != -1
 
     mkdirp path.join(projectsPath, projectId.toLowerCase(), 'assets'), (err) ->
       if err? and err.code != 'EEXIST'
@@ -87,7 +92,7 @@ module.exports = backend =
     project = projectsById[projectId.toLowerCase()]
     return process.nextTick( -> callback new Error "No such project" ) if ! project?
     return process.nextTick( -> callback new Error "Invalid script name" ) if ! backend.nameRegex.test name
-    return process.nextTick( -> callback new Error "Script name is already used" ) if project.assetNames.indexOf(name) != -1
+    return process.nextTick( -> callback new Error "Script name is already used" ) if project.assetNames.indexOf(name.toLowerCase()) != -1
 
     parseScript name, content, (err, script) ->
       if err?
@@ -113,21 +118,21 @@ module.exports = backend =
     project = projectsById[projectId.toLowerCase()]
     return process.nextTick( -> callback new Error "No such project" ) if ! project?
     return process.nextTick( -> callback new Error "Invalid actor name" ) if ! backend.nameRegex.test name
-    return process.nextTick( -> callback new Error "Actor name is already used" ) if project.actorsTree.byName[name]?
+    return process.nextTick( -> callback new Error "Actor name is already used" ) if project.actorsTree.byName[name.toLowerCase()]?
 
     actor = { name, children: [] }
 
     if parentName?
       return process.nextTick( -> callback new Error "Invalid parent name" ) if ! backend.nameRegex.test parentName
 
-      parentActor = project.actorsTree.byName[parentName]
+      parentActor = project.actorsTree.byName[parentName.toLowerCase()]
       return process.nextTick( -> callback new Error "No such parent actor" ) if ! parentActor?
 
-      project.actorsTree.byName[parentName].children.push actor
+      project.actorsTree.byName[parentName.toLowerCase()].children.push actor
     else
       project.actorsTree.roots.push actor
 
-    project.actorsTree.byName[actor.name] = actor
+    project.actorsTree.byName[actor.name.toLowerCase()] = actor
 
     fs.writeFile path.join(projectsPath, projectId.toLowerCase(), 'actors.json'), JSON.stringify(project.actorsTree.roots, null, 2), (err) ->
       if err?
