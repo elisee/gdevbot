@@ -51,6 +51,32 @@ html
         display: block;
       }
 
+      nav {
+        float: right;
+      }
+
+      nav a {
+        display: inline-block;
+        text-transform: uppercase;
+        margin: 0 0.5em;
+        padding: 0.5em 1em;
+        text-decoration: none;
+        background: #ddd;
+        border-radius: 0.5em;
+        color: #666;
+        font-weight: bold;
+      }
+
+      nav a:hover {
+        background: #dadada;
+        color: #444;
+      }
+
+      nav a:active {
+        background: #ccc;
+        color: #fff;
+      }
+
       h2, p { margin-top: 1em; }
       pre { margin-top: 0.5em; padding: 0.5em; background: #e0e0e0; border-radius: 0.5em; position: relative; }
       pre.NotYetImplemented:after {
@@ -67,6 +93,10 @@ html
         transform: translateX(20px) translateY(-10px) rotateZ(25deg);
       }
   body
+    nav
+      a(href="/") Home
+      a(href="/emoji") Emoji code
+
     h1
       img(src="https://pbs.twimg.com/profile_images/474536274435391488/nf4WB0wW.png")
       div
