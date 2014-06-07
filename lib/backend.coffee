@@ -43,7 +43,7 @@ writeActors = (projectId, actors, callback) ->
     if err?
       utils.botlog "[#{projectId}] Error saving actors.json:"
       utils.botlog JSON.stringify err, null, 2
-      callback new Error 'Actor created but file could not be written'
+      callback new Error 'Could not write actors file'
 
     callback null
 
@@ -62,13 +62,19 @@ module.exports = backend =
         utils.botlog JSON.stringify err, null, 2
         return callback new Error 'Unexpected error'
 
-      projectsById[projectId] =
+      projectsById[projectId] = project =
         assetNames: []
         actorsTree:
           roots: []
           byName: {}
 
-      callback null
+      mkdirp path.join(projectsPath, projectId.toLowerCase(), 'assets'), (err) ->
+        if err? and err.code != 'EEXIST'
+          utils.botlog "[#{projectId}] Unexpected error creating assets folder:"
+          utils.botlog JSON.stringify err, null, 2
+          return callback new Error 'Unexpected error' if err? 
+
+        writeActors projectId, project.actorsTree.roots, callback
 
   importAsset: (projectId, name, url, callback) ->
     project = projectsById[projectId.toLowerCase()]
