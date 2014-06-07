@@ -45,7 +45,6 @@ module.exports = (name, content, callback) ->
     acc = ''
 
     if typeof val == 'number'
-      console.log 'emoji!'
       # Emoji
       emojis =
         0x1f305:  type: 'awake',              name: 'sunrise'
@@ -58,6 +57,7 @@ module.exports = (name, content, callback) ->
         0x1f697:  type: 'move',               name: 'automobile'
 
         0x2b55:   type: 'angle',              name: 'heavy large circle'
+        0x1f503:  type: 'rotate',             name: 'clockwise downwards and upwards open circle arrows'
         0x1f504:  type: 'rotate',             name: 'anticlockwise downwards and upwards open circle arrows'
 
         0x261d:   type: 'touchPosition',      name: 'white up-pointing backhand index'
@@ -71,6 +71,8 @@ module.exports = (name, content, callback) ->
         0x23ea:   type: 'endBlock',           name: 'black right-pointing double triangle'
 
       emoji = emojis[val] or { type: 'unknown' }
+      console.log val
+      console.log emoji.type
       tokenStack.push emoji
       return
 
