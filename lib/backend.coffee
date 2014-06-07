@@ -49,7 +49,7 @@ writeActors = (projectId, actors, callback) ->
 
 module.exports = backend =
 
-  nameRegex: /^[A-Za-z0-9_]{3,40}$/
+  nameRegex: /^[A-Za-z0-9_]{1,40}$/
 
   createProject: (projectId, callback) ->
     return process.nextTick( -> callback new Error "Invalid project name" ) if ! backend.nameRegex.test projectId
