@@ -2,6 +2,9 @@ config = require './config'
 utils = require './lib/utils'
 backend = require './lib/backend'
 
+Entities = require('html-entities').AllHtmlEntities
+entities = new Entities()
+
 twitterAPI = require 'node-twitter-api'
 twitter = new twitterAPI config.twitter
 
@@ -140,6 +143,11 @@ dataCallback = (err, data, chunk, response) ->
   projectHashtagIndex = commandText.indexOf '#'
   commandText = commandText.slice(0, projectHashtagIndex) + commandText.slice(projectHashtagIndex + 1 + projectId.length)
 
+  # Decode HTML entities (Twitter does return some)
+  # see https://dev.twitter.com/issues/858
+  commandText = entities.decode commandText
+
+  # Collapse multiple spaces
   commandText = commandText.trim().replace(/\s{2,}/g, ' ')
   utils.botlog "[#{projectId}] #{data.user.screen_name}: #{commandText}"
 
