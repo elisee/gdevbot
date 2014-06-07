@@ -112,6 +112,20 @@ walkActorUpdate = (actor) ->
   walkActorUpdate childActor for childActor in actor.children
   return
 
+walkActorRender = (actor) ->
+  ctx.save()
+  ctx.translate actor.transform.x, actor.transform.y
+  ctx.rotate actor.transform.angle*Math.PI/180
+
+  for sprite in actor.sprites
+    ctx.drawImage sprite.image, -sprite.image.width / 2, -sprite.image.height / 2
+
+  walkActorRender childActor for childActor in actor.children
+
+  ctx.restore()
+  # ctx.fillRect actor.transform.x - 5, actor.transform.y - 5, 10, 10
+  return
+
 updateInterval = 1 / 60 * 1000
 lastTimestamp = 0
 accumulatedTime = 0
@@ -140,14 +154,7 @@ tick = (timestamp) ->
   ctx.translate ctx.canvas.width / 2, ctx.canvas.height / 2
 
   ctx.fillStyle = '#f00'
-  for actor in gdev.actorsTree.roots
-    for sprite in actor.sprites
-      ctx.save()
-      ctx.translate actor.transform.x, actor.transform.y
-      ctx.rotate actor.transform.angle*Math.PI/180
-      ctx.drawImage sprite.image, -sprite.image.width / 2, -sprite.image.height / 2
-      ctx.restore()
-    ctx.fillRect actor.transform.x - 5, actor.transform.y - 5, 10, 10
+  walkActorRender actor for actor in gdev.actorsTree.roots
 
   return
 
