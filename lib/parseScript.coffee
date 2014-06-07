@@ -58,6 +58,8 @@ module.exports = (name, content, callback) ->
         # 0x1f517:  type: 'link',               name: 'link'
         0x1f511:  type: 'key',                name: 'key'
 
+        0x1f6c4:  type: 'assign',             name: 'baggage claim'
+
         0x1f6a9:  type: 'position',           name: 'flag with pole'
         0x1f697:  type: 'move',               name: 'automobile'
 
@@ -122,6 +124,9 @@ module.exports = (name, content, callback) ->
       when 'statementEnd'
         break
 
+      when 'assign'
+        codeBlocks[activeCodeBlock] = "#{consumeExpression()}=#{consumeExpression()};"
+
       else
         # TODO: callback with an error
         console.log "Unexpected token type: #{JSON.stringify token, null, 2}"
@@ -145,7 +150,7 @@ module.exports = (name, content, callback) ->
       when 'self'
         code = 'self'
       when 'id'
-        code = "gdevAPI.vars.#{id.val}"
+        code = "gdevAPI.vars.#{token.value}"
       else
         # Not an expression? Put the token back in its place and return
         tokenStack.unshift token
