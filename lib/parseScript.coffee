@@ -125,7 +125,7 @@ module.exports = (name, content, callback) ->
         break
 
       when 'assign'
-        codeBlocks[activeCodeBlock] = "#{consumeExpression()}=#{consumeExpression()};"
+        codeBlocks[activeCodeBlock] += "#{consumeExpression()}=#{consumeExpression()};"
 
       else
         # TODO: callback with an error
