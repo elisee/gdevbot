@@ -38,6 +38,15 @@ for projectEntry in fs.readdirSync path.join projectsPath
 
     walkActor actor for actor in project.actorsTree.roots
 
+writeActors = (projectId, actors, callback) ->
+  fs.writeFile path.join(projectsPath, projectId.toLowerCase(), 'actors.json'), JSON.stringify(actors, null, 2), (err) ->
+    if err?
+      utils.botlog "[#{projectId}] Error saving actors.json:"
+      utils.botlog JSON.stringify err, null, 2
+      callback new Error 'Actor created but file could not be written'
+
+    callback null
+
 module.exports = backend =
 
   nameRegex: /^[A-Za-z0-9_]{3,40}$/
@@ -133,11 +142,36 @@ module.exports = backend =
       project.actorsTree.roots.push actor
 
     project.actorsTree.byName[actor.name.toLowerCase()] = actor
+    writeActors projectId, project.actorsTree.roots, callback
 
-    fs.writeFile path.join(projectsPath, projectId.toLowerCase(), 'actors.json'), JSON.stringify(project.actorsTree.roots, null, 2), (err) ->
-      if err?
-        utils.botlog "[#{projectId}] Error saving actors.json:"
-        utils.botlog JSON.stringify err, null, 2
-        callback new Error 'Actor created but file could not be written'
+  addComponent: (projectId, actorName, assetName, callback) ->
+    project = projectsById[projectId.toLowerCase()]
+    return process.nextTick( -> callback new Error "No such project" ) if ! project?
+    return process.nextTick( -> callback new Error "Invalid asset name" ) if ! backend.nameRegex.test assetName
+    return process.nextTick( -> callback new Error "Invalid actor name" ) if ! backend.nameRegex.test actorName
 
-      callback null
+    actor = project.actorsTree.byName[actorName.toLowerCase()]
+    return process.nextTick( -> callback new Error "No such actor" ) if ! actor?
+
+    for component in actor.components
+      if component.name.toLowerCase() == assetName.toLowerCase()
+        return process.nextTick( -> callback new Error "Component already exists" )
+
+    actor.components.push name: assetName
+    writeActors projectId, project.actorsTree.roots, callback
+
+  removeComponent: (projectId, actorName, assetName, callback) ->
+    project = projectsById[projectId.toLowerCase()]
+    return process.nextTick( -> callback new Error "No such project" ) if ! project?
+    return process.nextTick( -> callback new Error "Invalid asset name" ) if ! backend.nameRegex.test assetName
+    return process.nextTick( -> callback new Error "Invalid actor name" ) if ! backend.nameRegex.test actorName
+
+    actor = project.actorsTree.byName[actorName.toLowerCase()]
+    return process.nextTick( -> callback new Error "No such actor" ) if ! actor?
+
+    for component, i in actor.components
+      if component.name.toLowerCase() == assetName.toLowerCase()
+        actor.components.splice i, 1
+        return writeActors projectId, project.actorsTree.roots, callback
+
+    return process.nextTick( -> callback new Error "No such asset" )

@@ -79,6 +79,11 @@ executeCommand = (command, projectId, callback) ->
     when 'new actor'
       backend.createActor projectId, command.name, command.parentName, callback
 
+    when 'add'
+      backend.addComponent projectId, command.actorName, command.assetName, callback
+
+    when 'remove'
+      backend.removeComponent projectId, command.actorName, command.assetName, callback
 
   return
 
