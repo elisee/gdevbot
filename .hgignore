@@ -4,3 +4,4 @@ config.coffee
 *.sublime-*
 public/projects/*
 public/player/*.js
+public/js/playground.js

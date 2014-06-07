@@ -14,9 +14,59 @@ block content
 
     section { clear: both; }
 
+    .Playground .Buttons img {
+      width: 36px;
+      height: 36px;
+      margin: 0.125em;
+      cursor: pointer;
+    }
+
+    .Playground textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 0.5em;
+      outline: none;
+    }
+
   p.
     A tweet-size scripting language for a tweet-based game making tool.<br>
     Put each statement on its own line.
+
+  section.Playground
+    h2 Playground
+
+    .Buttons
+      img(src="images/emoji/1f305.png",alt="🌅",data-short-code="sunrise")
+      img(src="images/emoji/27b0.png",alt="➰",data-short-code="curly_loop")
+
+      img(src="images/emoji/1f427.png",alt="🐧",data-short-code="penguin")
+
+      img(src="images/emoji/1f6a9.png",alt="🚩",data-short-code="triangular_flag_on_post")
+      img(src="images/emoji/1f697.png",alt="🚗",data-short-code="car")
+
+      img(src="images/emoji/2b55.png",alt="⭕",data-short-code="o")
+      img(src="images/emoji/1f503.png",alt="🔃",data-short-code="arrows_clockwise")
+
+      img(src="images/emoji/1f511.png",alt="🔑",data-short-code="key")
+
+      img(src="images/emoji/1f6c4.png",alt="🛄",data-short-code="baggage_claim")
+
+      img(src="images/emoji/2753.png",alt="❓",data-short-code="question")
+
+      img(src="images/emoji/23e9.png",alt="⏩",data-short-code="fast_forward")
+      img(src="images/emoji/23ea.png",alt="⏪",data-short-code="rewind")
+
+      img.Icon(src="images/emoji/2702.png",alt="✂",data-short-code="scissors")
+
+    textarea
+    button#MakeScriptButton Generate tweetable script
+    |  
+    select#ExampleSelect
+      option (Pick an example)
+      option(value="setPositionOnSunrise") Set actor position on sunrise
+      option(value="moveRightwards") Move actor to the right continously
+      option(value="moveUpThenStop") Move up then stop
+    script(src="js/playground.js")
 
   section
     .Icon
@@ -111,7 +161,7 @@ block content
       mark 5
 
   section
-    img.Icon(src="images/emoji/1f511.png",alt="🔑 ")
+    img.Icon(src="images/emoji/1f511.png",alt="🔑")
     h2 Key
     pre :key:
 
@@ -127,7 +177,7 @@ block content
       mark
         img(src="images/emoji/1f427.png",alt="🐧")
       img(src="images/emoji/2702.png",alt="✂")
-      img(src="images/emoji/1f511.png",alt="🔑 ")
+      img(src="images/emoji/1f511.png",alt="🔑")
       mark
         | x
 
@@ -143,7 +193,7 @@ block content
       You can assign values to properties:
 
     pre
-      img(src="images/emoji/1f6c4.png",alt="🛄 ")
+      img(src="images/emoji/1f6c4.png",alt="🛄")
       mark
         img(src="images/emoji/1f427.png",alt="🐧")
       img(src="images/emoji/1f511.png",alt="🔑 ")
