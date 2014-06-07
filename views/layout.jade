@@ -3,8 +3,7 @@ html
   head
     title 
       block title
-        | home
-      |  @gdevbot
+        | @gdevbot
     link(href='http://fonts.googleapis.com/css?family=Roboto:400,700',rel='stylesheet',type='text/css')
     style.
       * {
@@ -100,7 +99,8 @@ html
     h1
       img(src="https://pbs.twimg.com/profile_images/474536274435391488/nf4WB0wW.png")
       div
-        div @gdevbot
+        div
+          block title
         <a href="https://twitter.com/gdevbot" class="twitter-follow-button" data-show-count="false" data-lang="en">Follow @gdevbot</a>
         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
