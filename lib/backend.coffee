@@ -12,6 +12,16 @@ module.exports = backend =
 
   nameRegex: /^[A-Za-z0-9_]{3,40}$/
 
+  createProject: (projectId, callback) ->
+    return callback new Error "Invalid project name" if ! backend.nameRegex.test projectId
+
+    fs.exists path.join(__dirname, '..', 'public', 'data', projectId.toLowerCase()), (exists) ->
+      return callback new Error 'Project name already taken' if exists
+
+      mkdirp path.join(__dirname, '..', 'public', 'data', projectId.toLowerCase(), 'assets'), (err) ->
+        return callback new Error 'Unexpected error' if err?
+        callback null
+
   importAsset: (projectId, name, url, callback) ->
     return callback new Error "Invalid asset name" if ! backend.nameRegex.test name
 

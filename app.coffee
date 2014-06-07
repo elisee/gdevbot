@@ -16,6 +16,9 @@ parseCommand = (text, callback) ->
   command.type = tokens[0]
 
   switch tokens[0]
+    when 'create'
+      return callback new Error "Invalid arguments" if tokens.length != 1
+
     when 'import'
       return callback new Error "Invalid arguments" if tokens.length != 4
 
@@ -44,6 +47,9 @@ parseCommand = (text, callback) ->
 
 executeCommand = (command, projectId, callback) ->
   switch command.type
+    when 'create'
+      backend.createProject projectId, callback
+
     when 'import'
       backend.importAsset projectId, command.name, command.url, callback
 
