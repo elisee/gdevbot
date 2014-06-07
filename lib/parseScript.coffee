@@ -138,6 +138,10 @@ module.exports = (name, content, callback) ->
     switch token.type
       when 'number'
         code = token.value.toString()
+      when 'position'
+        code = "gdev.api.GetPosition(#{consumeExpression()})"
+      when 'angle'
+        code = "gdev.api.GetAngle(#{consumeExpression()})"
       when 'self'
         code = 'self'
       when 'id'

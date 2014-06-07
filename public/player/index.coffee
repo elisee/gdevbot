@@ -94,6 +94,8 @@ setupAPI = ->
     self.transform.y = y
     return
 
+  gdev.api.GetPosition = (self) -> return { keys: { x: self.transform.x, y: self.transform.y } }
+
   gdev.api.Move = (self, dx, dy) ->
     self.transform.x += dx
     self.transform.y += dy
@@ -102,6 +104,8 @@ setupAPI = ->
   gdev.api.SetAngle = (self, angle) ->
     self.transform.angle = angle
     return
+
+  gdev.api.GetAngle = (self) -> return self.angle
 
   gdev.api.Rotate = (self, dAngle) ->
     self.transform.angle += dAngle
