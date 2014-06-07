@@ -72,8 +72,8 @@ module.exports = (name, content, callback) ->
         0x2195:   type: 'vertical',           name: 'up-down arrow'
 
         0x2753:   type: 'if',                 name: 'black question mark ornament'
-        0x23e9:   type: 'startBlock',         name: 'black right-pointing double triangle'
-        0x23ea:   type: 'endBlock',           name: 'black right-pointing double triangle'
+        0x23e9:   type: 'blockStart',         name: 'black right-pointing double triangle'
+        0x23ea:   type: 'blockEnd',           name: 'black right-pointing double triangle'
 
       emoji = emojis[val] or { type: 'unknown' }
       console.log val
@@ -115,11 +115,11 @@ module.exports = (name, content, callback) ->
 
       when 'if'
         codeBlocks[activeCodeBlock] += "if(#{consumeExpression()})"
-      when 'startBlock'
+      when 'blockStart'
         codeBlocks[activeCodeBlock] += "{"
-      when 'endBlock'
+      when 'blockEnd'
         codeBlocks[activeCodeBlock] += "}"
-      when 'endStatement'
+      when 'statementEnd'
         break
 
       else
