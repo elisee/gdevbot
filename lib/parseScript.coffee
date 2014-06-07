@@ -22,6 +22,8 @@ fixedCharCodeAt = (str, idx) ->
   #        return ((hi - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000;
   code
 
+idRegex = /^[A-Za-z0-9_]$/
+
 module.exports = (name, content, callback) ->
   # Remove line-feeds
   content = content.replace /\r/g, ''
@@ -51,7 +53,10 @@ module.exports = (name, content, callback) ->
         0x27b0:   type: 'update',             name: 'curly loop'
 
         0x1f427:  type: 'self',               name: 'penguin'         
-        0x1f517:  type: 'link',               name: 'link'
+        0x2702:   type: 'scissors',           name: 'black scissors'
+        0x2704:   type: 'scissors',           name: 'white scissors'
+        # 0x1f517:  type: 'link',               name: 'link'
+        0x1f511:  type: 'key',                name: 'key'
 
         0x1f6a9:  type: 'position',           name: 'flag with pole'
         0x1f697:  type: 'move',               name: 'automobile'
@@ -96,7 +101,6 @@ module.exports = (name, content, callback) ->
 
     switch token.type
       when 'awake', 'update'
-        console.log 'heh'
         activeCodeBlock = token.type
         console.log activeCodeBlock
 
@@ -137,7 +141,7 @@ module.exports = (name, content, callback) ->
       when 'self'
         code = 'self'
       when 'id'
-        code = "gdevAPI.vars.#{id.val}" 
+        code = "gdevAPI.vars.#{id.val}"
       else
         # Not an expression? Put the token back in its place and return
         tokenStack.unshift token
@@ -157,15 +161,34 @@ module.exports = (name, content, callback) ->
         secondOperand = consumeExpression()
         return "#{token.type}#{secondOperand}"
 
-      when 'link' then code = '.'
-      when 'id' then code = "#{id.val}"
+      when 'scissors'
+        return null
+
+      when 'key'
+        code = ".keys[#{consumeIndex()}]"
       else
-        # Not an expression? Put the token back in its place and return
+        # Not an expression follow-up? Put the token back in its place and return
         tokenStack.unshift token
         return null
 
     followUp = consumeExpressionFollowUp()
     return if followUp? then "#{code}#{followUp}" else code
+
+  consumeIndex = ->
+    return null if tokenStack.length == 0
+
+    token = tokenStack.splice(0, 1)[0]
+
+    switch token.type
+      when 'id'
+        return "\"#{token.value}\""
+      when 'number'
+        return token.value.toString()
+      else
+        # Not an indexable? Put the token back in its place
+        tokenStack.unshift token
+
+    return null
 
   while i < content.length
     charCode = fixedCharCodeAt content, i
@@ -182,6 +205,9 @@ module.exports = (name, content, callback) ->
         makeToken()
         tokenStack.push { type: 'statementEnd' } if char == '\n'
       else
+        # Check for alphanumeric boundary
+        if acc.length > 0 and ((idRegex.test(acc[acc.length-1]) and !idRegex.test(char)) or (!idRegex.test(acc[acc.length-1]) and idRegex.test(char)))
+          makeToken()
         acc += char
 
     i++
