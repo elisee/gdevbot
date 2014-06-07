@@ -64,9 +64,9 @@ module.exports = backend =
 
           callback null
 
-  createObject: (projectId, name, assetName, callback) ->
-    return callback new Error "Invalid object name" if ! backend.nameRegex.test name
+  createActor: (projectId, name, assetName, callback) ->
+    return callback new Error "Invalid actor name" if ! backend.nameRegex.test name
     return callback new Error "Invalid asset name" if ! backend.nameRegex.test assetName
 
-    # TODO: Implement creating an object
+    # TODO: Implement creating an actor
     callback null

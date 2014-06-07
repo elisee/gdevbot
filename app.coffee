@@ -32,12 +32,27 @@ parseCommand = (text, callback) ->
       command.name = tokens[1]
       command.content = tokens.slice(2).join ' '
 
-    when 'create'
+    when 'new'
+      return callback new Error "Invalid arguments" if tokens.length != 3
+
+      return callback new Error "Expected 'actor' after 'new'" if tokens[1] != 'actor'
+      command.type += " #{tokens[1]}"
+
+      command.name = tokens[2]
+
+    when 'add'
       return callback new Error "Invalid arguments" if tokens.length != 4
 
-      command.asset = tokens[1]
-      return callback new Error "Syntax error, expected 'named'" if tokens[2] != 'named'
-      command.name = tokens[3]
+      command.assetName = tokens[1]
+      return callback new Error "Expected 'to' after asset name" if tokens[2] != 'to'
+      command.actorName = tokens[3]
+
+    when 'remove'
+      return callback new Error "Invalid arguments" if tokens.length != 4
+
+      command.assetName = tokens[1]
+      return callback new Error "Expected 'from' after asset name" if tokens[2] != 'from'
+      command.actorName = tokens[3]
 
     else
       return callback new Error "No such command"
@@ -56,8 +71,9 @@ executeCommand = (command, projectId, callback) ->
     when 'script'
       backend.addScript projectId, command.name, command.content, callback
 
-    when 'create'
-      backend.createObject projectId, command.name, command.asset, callback
+    when 'new'
+      backend.createActor projectId, command.name, callback
+
 
   return
 
