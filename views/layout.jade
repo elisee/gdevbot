@@ -82,18 +82,48 @@ html
         position: absolute;
         top: 0; right: 0;
         padding: 0.25em;
-        content: 'TODO';
+        content: 'Soon';
         font: bold 100% 'Roboto';
         font-size: 80%;
         background: #f68;
         border-radius: 0.5em;
-        -webkit-transform: translateX(20px) translateY(-10px) rotateZ(25deg);
-        -moz-transform: translateX(20px) translateY(-10px) rotateZ(25deg);
-        transform: translateX(20px) translateY(-10px) rotateZ(25deg);
+        -webkit-transform: translateX(20px) translateY(-10px) rotateZ(5deg);
+        -moz-transform: translateX(20px) translateY(-10px) rotateZ(5deg);
+        transform: translateX(20px) translateY(-10px) rotateZ(5deg);
       }
+
+      pre .Tweet {
+        position: absolute;
+        top: 0; right: 0;
+        padding: 0.25em 0.5em;
+        font: bold 100% 'Roboto';
+        font-size: 80%;
+        background: #8f6;
+        border-radius: 0.5em;
+        -webkit-transform: translateX(20px) translateY(-10px) rotateZ(5deg);
+        -moz-transform: translateX(20px) translateY(-10px) rotateZ(5deg);
+        transform: translateX(20px) translateY(-10px) rotateZ(5deg);
+        cursor: pointer;
+        color: inherit;
+        text-decoration: none;
+      }
+
+      pre .Tweet:hover {
+        background: #6e5;
+        color: #000;
+        box-shadow: 0 0 1em rgba(255,255,255,0.5);
+      }
+
+      pre .Tweet:active {
+        background: #3b1;
+        color: #fff;
+        box-shadow: 0 0 1em rgba(255,255,255,0.5);
+      }
+
   body
     nav
       a(href="/") Home
+      a(href="/commands") Commands
       a(href="/emoji") Emoji code
 
     h1
@@ -105,3 +135,5 @@ html
         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
     block content
+
+    script(src="/js/tweetCommand.js")

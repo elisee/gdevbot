@@ -1,94 +1,20 @@
 extends layout
 
 block content
-  p Hi, I'm <a href="http://twitter.com/gdevbot">@gdevbot</a>. You can make me make games for you by tweeting at me. I know, crazy right?
+  p Hi, I'm <a href="http://twitter.com/gdevbot">@gdevbot</a>. You can make me build games for you by tweeting at me. Crazy cool, right?
 
   h2 I... huh, what? why?
 
   p Let's get started making a game, shall we?
 
-  h2 Start by claiming a project name
+  section
+    h2 Start by claiming a project name
 
-  pre.
-    @gdevbot <mark>#ProjectName</mark> create
+    pre
+      .Command @#{botUsername} #<mark>ProjectName</mark> create
+      a.Tweet Tweet this command
 
   p.
     You can put the mention and the project hashtag anywhere in the tweet.<br>
     Don't mention anyone else or add more hashtags, lest your tweet be ignored.
 
-  h2 Import an image
-
-  pre.
-    @gdevbot <mark>#ProjectName</mark> import <mark>name</mark> from <mark>picture URL</mark>
-
-  h2 Add a script
-
-  p Scripts are written using <a href="/emoji">emoji code</a>, a concise scripting language.
-
-  pre.
-    @gdevbot <mark>#ProjectName</mark> script <mark>name</mark> <mark>emoji code</mark>
-
-  h2 Create an actor
-
-  p An actor has a position and angle.
-
-  pre.
-    @gdevbot <mark>#ProjectName</mark> new actor <mark>name</mark>
-
-  p An actor can be a child of another actor.
-
-  pre.
-    @gdevbot <mark>#ProjectName</mark> new actor <mark>name</mark> parent <mark>parent actor</mark>
-
-  h2 Display images, make things come to life
-
-  p Actors can be used to display an image and you can attach scripted behaviors to them.
-
-  pre.
-    @gdevbot <mark>#ProjectName</mark> add <mark>script or image</mark> to <mark>actor</mark>
-
-  p If you change your mind, you can remove them.
-
-  pre.
-    @gdevbot <mark>#ProjectName</mark> remove <mark>script or image</mark> from <mark>actor</mark>
-
-  h2 Rename, move/reparent, delete
-
-  p You can rename assets and actors.
-
-  pre.NotYetImplemented.
-    @gdevbot <mark>#ProjectName</mark> rename <mark>actor</mark> to <mark>new name</mark>
-
-  p.
-    You can move assets into a different folder and change an actor's parent.<br>
-    Folders are automatically created and deleted as needed.
-
-  pre.NotYetImplemented.
-    @gdevbot <mark>#ProjectName</mark> move <mark>asset</mark> to <mark>folder</mark>
-
-  pre.
-    @gdevbot <mark>#ProjectName</mark> reparent <mark>actor</mark> to <mark>parent</mark>
-
-  p.
-    You can use "root" as the parent name to detach an actor from its parent altogether.
-
-  p You can delete them.
-
-  pre.NotYetImplemented.
-    @gdevbot <mark>#ProjectName</mark> delete <mark>asset or actor</mark> forever
-
-  h2 Allow a friend to edit the project with you
-
-  p You can give access to multiple people at once by mentioning them in the same tweet.
-
-  pre.
-    @gdevbot <mark>#ProjectName</mark> allow <mark>@elisee</mark>
-
-  p If you change your mind, you can remove someone too.
-
-  pre.
-    @gdevbot <mark>#ProjectName</mark> deny <mark>@elisee</mark>
-
-  h2 Who made this?
-
-  p My name's <a href="http://twitter.com/elisee">Elisée</a>. I <a href="http://sparklinlabs.com/">make games</a>.

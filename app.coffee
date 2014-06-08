@@ -244,7 +244,10 @@ app.set 'view engine', 'jade'
 app.use express.static __dirname + '/public'
 app.use require('connect-slashes') false
 
+app.locals.botUsername = config.twitter.username
+
 app.get '/', (req, res) -> res.render 'index'
+app.get '/commands', (req, res) -> res.render 'commands'
 app.get '/emoji', (req, res) -> res.render 'emoji'
 
 app.get '/p/:projectId', (req, res) ->
@@ -259,7 +262,7 @@ app.get '/p/:projectId', (req, res) ->
       actors = JSON.parse actorsJSON
 
       if assets.length == 0 or actors.length == 0 or (actors[0].children.length == 0 and actors[0].components.length == 0)
-        return res.render 'newGame', projectId: req.params.projectId, assets: assets, actors: actors, botUsername: config.twitter.username
+        return res.render 'newGame', projectId: req.params.projectId, assets: assets, actors: actors
 
       project =
         projectId: req.params.projectId

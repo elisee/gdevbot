@@ -1,0 +1,89 @@
+extends layout
+
+block content
+
+  h2 Import an image
+
+  pre
+    .Command @#{botUsername} #<mark>ProjectName</mark> import <mark>name</mark> from <mark>picture URL</mark>
+    a.Tweet Tweet this
+
+  h2 Create an actor
+
+  p An actor has a position and angle.
+
+  pre
+    .Command @#{botUsername} #<mark>ProjectName</mark> new actor <mark>name</mark>
+    a.Tweet Tweet this
+
+  p An actor can be a child of another actor.
+
+  pre
+    .Command @#{botUsername} #<mark>ProjectName</mark> new actor <mark>name</mark> parent <mark>parent actor</mark>
+    a.Tweet Tweet this
+
+  h2 Import a script
+
+  p Scripts are written using <a href="/emoji">emoji code</a>, a concise scripting language.
+
+  pre
+    .Command @#{botUsername} #<mark>ProjectName</mark> script <mark>name</mark> <mark>emoji code</mark>
+    a.Tweet Tweet this
+
+  h2 Display images, make things come to life
+
+  p You can attach images and scripts to actors.
+
+  pre
+    .Command @#{botUsername} #<mark>ProjectName</mark> add <mark>asset</mark> to <mark>actor</mark>
+    a.Tweet Tweet this
+
+  p If you change your mind, you can remove them.
+
+  pre
+    .Command @#{botUsername} #<mark>ProjectName</mark> remove <mark>asset</mark> from <mark>actor</mark>
+    a.Tweet Tweet this
+
+  h2 Rename, move/reparent, delete
+
+  p You can rename assets and actors.
+
+  pre.NotYetImplemented
+    | @#{botUsername} #<mark>ProjectName</mark> rename <mark>actor</mark> to <mark>new name</mark>
+
+  p.
+    You can move assets into a different folder and change an actor's parent.<br>
+    Folders are automatically created and deleted as needed.
+
+  pre.NotYetImplemented
+    | @#{botUsername} #<mark>ProjectName</mark> move <mark>asset</mark> to <mark>folder</mark>
+
+  pre
+    .Command @#{botUsername} #<mark>ProjectName</mark> reparent <mark>actor</mark> to <mark>parent</mark>
+    a.Tweet Tweet this
+
+  p.
+    You can use "root" as the parent name to detach an actor from its parent altogether.
+
+  p You can delete them.
+
+  pre.NotYetImplemented
+    | @#{botUsername} #<mark>ProjectName</mark> delete <mark>asset or actor</mark> forever
+
+  h2 Allow a friend to edit the project with you
+
+  p You can give access to multiple people at once by mentioning them in the same tweet.
+
+  pre
+    .Command @#{botUsername} #<mark>ProjectName</mark> allow @<mark>elisee</mark>
+    a.Tweet Tweet this
+
+  p If you change your mind, you can remove someone too.
+
+  pre
+    .Command @#{botUsername} #<mark>ProjectName</mark> deny @<mark>elisee</mark>
+    a.Tweet Tweet this
+
+  h2 Who made this?
+
+  p My name's <a href="http://twitter.com/elisee">Elisée</a>. I <a href="http://sparklinlabs.com/">make games</a>.
