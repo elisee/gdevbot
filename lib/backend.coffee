@@ -14,7 +14,7 @@ makeProject = (projectId) ->
   projectsById[projectId.toLowerCase()] = project =
     id: projectId
     metadata: { members: { list: [], byId: {} } }
-    assetNames: []
+    assetsByName: []
     actorsTree: { roots: [], byName: {}, parentsByChildName: {} }
 
   project
@@ -71,8 +71,15 @@ for projectEntry in fs.readdirSync path.join projectsPath
   try assetEntries = fs.readdirSync path.join projectsPath, projectEntry, 'assets'
   if assetEntries?
     for assetEntry in assetEntries
-      assetName = assetEntry.split('.')[0]
-      project.assetNames.push assetName.toLowerCase()
+      [ assetName, ext ] = assetEntry.split '.'
+
+      asset = name: assetName
+
+      switch ext
+        when 'js' then asset.type = 'script'
+        else asset.type = 'image'
+
+      project.assetsByName[asset.name.toLowerCase()] = asset
 
   # Actors
   try actorsJSON = fs.readFileSync path.join(projectsPath, projectEntry, 'actors.json'), encoding: 'utf8'
@@ -137,7 +144,7 @@ module.exports = backend =
     if member.cachedUsername != user.screen_name
       writeMetadata project, (err) ->
         if err?
-          # Just logging any writing error here, it's not a deal breaker.
+          # Just logging any saving error here, it's not a deal breaker.
           utils.botlog "[#{projectId}] Unexpected error saving project metadata:"
           utils.botlog JSON.stringify err, null, 2
 
@@ -171,11 +178,17 @@ module.exports = backend =
 
   importAsset: (project, name, url, callback) ->
     return process.nextTick ( -> callback new Error "Invalid asset name" ) if ! nameRegex.test name
-    return process.nextTick ( -> callback new Error "Asset name is already used" ) if project.assetNames.indexOf(name.toLowerCase()) != -1
 
     # TODO: Abort request if size is too big
     request { url, encoding: null }, (err, response, body) ->
       return callback new Error 'Failed to download asset' if err? or response.statusCode != 200
+
+      # TODO: Allow importing sounds (and even 3D models maybe?)
+      assetType = 'image'
+
+      existingAsset = if project.assetsByName[name.toLowerCase()]
+      if existingAsset? and existingAsset.type != assetType
+        return callback new Error "Name already used by an asset of type \"#{existingAsset.type}\""
 
       # TODO: Implement support for other asset types
       gm(body).resize(1024,1024,'>').write path.join(projectsPath, project.id.toLowerCase(), 'assets', "#{name}.png"), (err) ->
@@ -184,13 +197,17 @@ module.exports = backend =
           utils.botlog JSON.stringify err, null, 2
           return callback new Error 'Failed to import asset'
 
+        project.assetsByName[name.toLowerCase()] = { name: name, type: assetType }
         callback null
 
       return
 
   addScript: (project, name, content, callback) ->
     return process.nextTick ( -> callback new Error "Invalid script name" ) if ! nameRegex.test name
-    return process.nextTick ( -> callback new Error "Script name is already used" ) if project.assetNames.indexOf(name.toLowerCase()) != -1
+
+    existingAsset = if project.assetsByName[name.toLowerCase()]
+    if existingAsset? and existingAsset.type != 'script'
+      return process.nextTick ( -> callback new Error "Name already used by an asset of type \"#{existingAsset.type}\"" ) 
 
     parseScript name, content, (err, script) ->
       if err?
@@ -200,9 +217,14 @@ module.exports = backend =
         return
 
       assetsPath = path.join(projectsPath, project.id.toLowerCase(), 'assets')
-      mkdirp assetsPath, (err) ->
-        return callback new Error 'Unexpected error' if err? and err.code != 'EEXIST'
+      fs.writeFile path.join(assetsPath, "#{name}.js"), script, (err) ->
+        if err?
+          utils.botlog "[#{project.id}] Error saving script #{name}:"
+          utils.botlog JSON.stringify err, null, 2
+          callback new Error 'Failed to save script'
+          return
 
+        project.assetsByName[name.toLowerCase()] = { name: name, type: 'script' }
         callback null
 
   createActor: (project, name, parentName, callback) ->
