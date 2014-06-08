@@ -106,7 +106,7 @@ setupAPI = ->
     self.transform.angle = angle
     return
 
-  gdev.api.GetAngle = (self) -> return self.angle
+  gdev.api.GetAngle = (self) -> return self.transform.angle
 
   gdev.api.Rotate = (self, dAngle) ->
     self.transform.angle += dAngle
