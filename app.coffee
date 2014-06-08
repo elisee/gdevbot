@@ -247,26 +247,29 @@ app.use require('connect-slashes') false
 app.locals.botUsername = config.twitter.username
 
 emojisByShortcode =
-  ":sunrise:": 0x1f305
-  ":curly_loop:": 0x27b0
-  ":penguin:": 0x1f427
-  ":triangular_flag_on_post:": 0x1f6a9
-  ":car:": 0x1f697
-  ":o:": 0x2b55
-  ":arrows_clockwise:": 0x1f503
-  ":key:": 0x1f511
-  ":baggage_claim:": 0x1f6c4
-  ":question:": 0x2753
-  ":fast_forward:": 0x23e9
-  ":rewind:": 0x23ea
-  ":scissors:": 0x2702
-  ":point_up:": 0x261d
-  ":wave:": 0x1f44b
+  ":sunrise:":                       utf8: 0x1f305,       desc: "Once"
+  ":curly_loop:":                    utf8: 0x27b0,        desc: "Always"
+  ":penguin:":                       utf8: 0x1f427,       desc: "Self"
+  ":triangular_flag_on_post:":       utf8: 0x1f6a9,       desc: "Position"
+  ":car:":                           utf8: 0x1f697,       desc: "Move"
+  ":o:":                             utf8: 0x2b55,        desc: "Angle"
+  ":arrows_clockwise:":              utf8: 0x1f503,       desc: "Rotate"
+  ":key:":                           utf8: 0x1f511,       desc: "Property"
+  ":baggage_claim:":                 utf8: 0x1f6c4,       desc: "Set value"
+  ":question:":                      utf8: 0x2753,        desc: "Condition"
+  ":fast_forward:":                  utf8: 0x23e9,        desc: "Block start"
+  ":rewind:":                        utf8: 0x23ea,        desc: "Block end"
+  ":scissors:":                      utf8: 0x2702,        desc: "End expression"
+  ":hand:":                          utf8: 0x270b,        desc: "Touch position"
+  ":wave:":                          utf8: 0x1f44b,       desc: "Touch movement"
+  ":point_up_2:":                    utf8: 0x1f446,       desc: "Touch started"
+  ":point_up:":                      utf8: 0x261d,        desc: "Touch ended"
 
 require 'string.fromcodepoint'
 app.locals.imgEmoji = (shortcode) ->
-  emojiValue = emojisByShortcode[shortcode] || '?'.charCodeAt(0)
-  """<img src="images/emoji/#{emojiValue.toString(16)}.png", alt="#{String.fromCodePoint(emojiValue)}", title="#{shortcode}">"""
+  emoji = emojisByShortcode[shortcode]
+
+  """<img src="images/emoji/#{emoji.utf8.toString(16)}.png", alt="#{String.fromCodePoint(emoji.utf8)}", title="#{emoji.desc}" data-shortcode="#{shortcode}">"""
 
 app.get '/', (req, res) -> res.render 'index'
 app.get '/commands', (req, res) -> res.render 'commands'

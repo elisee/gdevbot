@@ -67,8 +67,11 @@ module.exports = (name, content, callback) ->
         0x1f503:  type: 'rotate',             shortcode: 'arrows_clockwise'
         0x1f504:  type: 'rotate',             shortcode: 'arrows_anticlockwise'
 
-        0x261d:   type: 'touchPosition',      shortcode: 'point_up'
+        0x270b:   type: 'touchPosition',      shortcode: 'hand'
         0x1f44b:  type: 'touchDelta',         shortcode: 'wave'
+
+        0x1f446:  type: 'touchStart',         shortcode: 'point_up_2'
+        0x261d:   type: 'touchEnd',           shortcode: 'point_up'
 
         0x2753:   type: 'if',                 shortcode: 'question'
         0x23e9:   type: 'blockStart',         shortcode: 'fast_forward'
@@ -148,6 +151,10 @@ module.exports = (name, content, callback) ->
         code = "gdev.api.input.GetTouchPosition()"
       when 'touchDelta'
         code = "gdev.api.input.GetTouchDelta()"
+      when 'touchStart'
+        code = "gdev.api.input.HasTouchStarted()"
+      when 'touchEnd'
+        code = "gdev.api.input.HasTouchEnded()"
       when 'self'
         code = 'self'
       when 'id'

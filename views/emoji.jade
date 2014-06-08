@@ -63,8 +63,10 @@ block content
 
       != imgEmoji(":scissors:")
 
-      != imgEmoji(":point_up:")
+      != imgEmoji(":hand:")
       != imgEmoji(":wave:")
+      != imgEmoji(":point_up_2:")
+      != imgEmoji(":point_up:")
 
     textarea
     button#MakeScriptButton Generate tweetable script
@@ -74,6 +76,7 @@ block content
       option(value="setPositionOnSunrise") Set actor position on sunrise
       option(value="moveRightwards") Move actor to the right continously
       option(value="moveUpThenStop") Move up then stop
+      option(value="dragHorizontally") Drag with finger horizontally
     script(src="js/playground.js")
 
   section#events
@@ -257,13 +260,17 @@ block content
 
   section#input
     .Icon
-      != imgEmoji(":point_up:")
+      != imgEmoji(":hand:")
       |  
       != imgEmoji(":wave:")
-    h2 Touch position, touch delta
+      | 
+      != imgEmoji(":point_up_2:")
+      |  
+      != imgEmoji(":point_up:")
+    h2 Touch input
 
     p.
-      The pointing finger represents the touch position on touch devices,
+      The hand represents the touch position on touch devices,
       or the mouse position while the left button is pressed on other devices.
 
     p.
@@ -273,10 +280,10 @@ block content
       != imgEmoji(":curly_loop:")
       != imgEmoji(":triangular_flag_on_post:")
       != imgEmoji(":penguin:")
-      != imgEmoji(":point_up:")
+      != imgEmoji(":hand:")
       != imgEmoji(":key:")
       | x
-      != imgEmoji(":point_up:")
+      != imgEmoji(":hand:")
       != imgEmoji(":key:")
       | y
 
@@ -295,5 +302,26 @@ block content
       != imgEmoji(":key:")
       | x
       != imgEmoji(":wave:")
+      != imgEmoji(":key:")
+      | y
+
+    p.
+      The pointing fingers stand for start and end of a touch or mouse click.<br>
+      You can use them in condition to react to those events.
+
+    p.
+      For instance, this moves the actor to where the finger is pointing
+      when a touch starts.
+
+    pre
+      != imgEmoji(":curly_loop:")
+      != imgEmoji(":question:")
+      != imgEmoji(":point_up_2:")
+      != imgEmoji(":triangular_flag_on_post:")
+      != imgEmoji(":penguin:")
+      != imgEmoji(":hand:")
+      != imgEmoji(":key:")
+      | x
+      != imgEmoji(":hand:")
       != imgEmoji(":key:")
       | y

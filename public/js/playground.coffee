@@ -3,12 +3,12 @@ textareaElt = document.querySelector('.Playground textarea')
 
 buttonsElt.addEventListener 'click', (event) ->
   return if event.target.tagName != 'IMG'
-  return if ! event.target.title?
+  return if ! event.target.dataset.shortcode?
 
   text = textareaElt.value
-  textareaElt.value = text.substring(0, textareaElt.selectionStart) + event.target.title  + text.substring textareaElt.selectionStart
+  textareaElt.value = text.substring(0, textareaElt.selectionStart) + event.target.dataset.shortcode  + text.substring textareaElt.selectionStart
 
-  newSelectionStart = textareaElt.selectionStart + event.target.title.length + 2
+  newSelectionStart = textareaElt.selectionStart + event.target.dataset.shortcode.length + 2
   textareaElt.setSelectionRange newSelectionStart, newSelectionStart
   textareaElt.focus()
 
@@ -20,7 +20,7 @@ document.getElementById('MakeScriptButton').addEventListener 'click', (event) ->
   code = code.replace /: :/g, '::'
 
   for buttonElt in buttonsElt.children
-    code = code.replace new RegExp(buttonElt.title, 'g'), buttonElt.getAttribute 'alt'
+    code = code.replace new RegExp(buttonElt.dataset.shortcode, 'g'), buttonElt.getAttribute 'alt'
 
    prompt 'Copy to Twitter, fill in the blanks, tweet!', "@gdevbot #[project] script [script] #{code}"
 
@@ -29,6 +29,7 @@ examples =
   setPositionOnSunrise: ":sunrise: :triangular_flag_on_post: :penguin: 20 30"
   moveRightwards: ":curly_loop: :car: :penguin: 5 0"
   moveUpThenStop: ":curly_loop: :question: :triangular_flag_on_post: :penguin: :scissors: :key: y < 100 \n:car: :penguin: 0 5"
+  dragHorizontally: ":curly_loop: :car: :penguin: :wave: :key: x 0"
 
 document.getElementById('ExampleSelect').addEventListener 'change', (event) ->
   return if ! event.target.value?

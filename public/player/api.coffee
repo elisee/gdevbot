@@ -34,8 +34,13 @@ setupInputAPI = (ctx) ->
   newTouchPosition = null
   touchDelta = x: 0, y: 0
   newTouchDelta = x: 0, y: 0
+  touchStarted = false
+  touchEnded = false
 
+  wasMouseDown = false
   isMouseDown = false
+  wasTouchDown = false
+  isTouchDown = false
 
   ctx.canvas.addEventListener 'touchstart', (event) =>
     event.preventDefault()
@@ -49,21 +54,21 @@ setupInputAPI = (ctx) ->
     newTouchDelta.x = 0
     newTouchDelta.y = 0
 
-    @mouseButtonsDown[ 0 ] = true
+    isTouchDown = true
     return
 
   ctx.canvas.addEventListener 'touchend', (event) =>
     return if activeTouchId != event.changedTouches[0].identifier
 
     activeTouchId = null
-    @mouseButtonsDown[ 0 ] = false
+    isTouchDown = false
     return
 
   ctx.canvas.addEventListener 'touchcancel', (event) =>
     return if activeTouchId != event.changedTouches[0].identifier
 
     activeTouchId = null
-    @mouseButtonsDown[ 0 ] = false
+    isTouchDown = false
     return
 
   ctx.canvas.addEventListener 'touchmove', (event) =>
@@ -110,6 +115,11 @@ setupInputAPI = (ctx) ->
 
   {
     tick: ->
+      touchStarted = (not wasTouchDown and isTouchDown) or (not wasMouseDown and isMouseDown)
+      touchEnded = (wasTouchDown and not isTouchDown) or (wasMouseDown and not isMouseDown)
+      wasTouchDown = isTouchDown
+      wasMouseDown = isMouseDown
+
       if newTouchPosition?
         touchPosition = newTouchPosition
         newTouchPosition = null
@@ -127,6 +137,9 @@ setupInputAPI = (ctx) ->
       keys:
         x: touchDelta.x
         y: touchDelta.y
+
+    HasTouchStarted: -> touchStarted
+    HasTouchEnded: -> touchEnded
   }
 
 window.setupAPI = (ctx) ->
