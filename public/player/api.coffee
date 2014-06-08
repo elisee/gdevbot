@@ -50,7 +50,7 @@ setupInputAPI = (ctx) ->
     activeTouchId = touch.identifier
 
     rect = event.target.getBoundingClientRect()
-    newTouchPosition = x: (touch.clientX - rect.left) * window.devicePixelRatio, y: (touch.clientY - rect.top) * window.devicePixelRatio
+    newTouchPosition = x: (touch.clientX - rect.left) - ctx.canvas.width / 2, y: (touch.clientY - rect.top) - ctx.canvas.height / 2
     newTouchDelta.x = 0
     newTouchDelta.y = 0
 
@@ -76,7 +76,7 @@ setupInputAPI = (ctx) ->
     touch = event.changedTouches[0]
     if activeTouchId == touch.identifier
       rect = event.target.getBoundingClientRect()
-      newTouchPosition = x: (touch.clientX - rect.left) * window.devicePixelRatio, y: (touch.clientY - rect.top) * window.devicePixelRatio
+      newTouchPosition = x: (touch.clientX - rect.left) - ctx.canvas.width / 2, y: (touch.clientY - rect.top) - ctx.canvas.height / 2
       newTouchDelta.x = newTouchPosition.x - touchPosition.x
       newTouchDelta.y = newTouchPosition.y - touchPosition.y
     return
