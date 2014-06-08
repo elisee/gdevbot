@@ -91,6 +91,7 @@ module.exports = (name, content, callback) ->
       when '≤', '<=' then tokenStack.push { type: '<=' }
       when '≥', '>=' then tokenStack.push { type: '>=' }
       when '=' then tokenStack.push { type: '==' }
+      when '≠' then tokenStack.push { type: '!=' }
       when '<', '>', '+', '-', '*', '/', '%'
         tokenStack.push { type: val }
       else
@@ -176,7 +177,7 @@ module.exports = (name, content, callback) ->
     token = tokenStack.splice(0, 1)[0]
 
     switch token.type
-      when '+', '-', '*', '/', '%', '<', '>', '<=', '>=', '=='
+      when '+', '-', '*', '/', '%', '<', '>', '<=', '>=', '==', '!='
         secondOperand = consumeExpression()
         return "#{token.type}#{secondOperand}"
 
