@@ -136,8 +136,10 @@ window.setupAPI = (ctx) ->
 
   # Old API for compatibility with older games
   gdev.api.SetPosition = gdev.api.actor.SetPosition
+  gdev.api.GetPosition = gdev.api.actor.GetPosition
   gdev.api.Move = gdev.api.actor.Move
   gdev.api.SetAngle = gdev.api.actor.SetAngle
+  gdev.api.GetAngle = gdev.api.actor.GetAngle
   gdev.api.Rotate = gdev.api.actor.Rotate
 
   return
