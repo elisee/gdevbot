@@ -186,7 +186,7 @@ module.exports = backend =
       # TODO: Allow importing sounds (and even 3D models maybe?)
       assetType = 'image'
 
-      existingAsset = if project.assetsByName[name.toLowerCase()]
+      existingAsset = project.assetsByName[name.toLowerCase()]
       if existingAsset? and existingAsset.type != assetType
         return callback new Error "Name already used by an asset of type \"#{existingAsset.type}\""
 
@@ -205,7 +205,7 @@ module.exports = backend =
   addScript: (project, name, content, callback) ->
     return process.nextTick ( -> callback new Error "Invalid script name" ) if ! nameRegex.test name
 
-    existingAsset = if project.assetsByName[name.toLowerCase()]
+    existingAsset = project.assetsByName[name.toLowerCase()]
     if existingAsset? and existingAsset.type != 'script'
       return process.nextTick ( -> callback new Error "Name already used by an asset of type \"#{existingAsset.type}\"" ) 
 
