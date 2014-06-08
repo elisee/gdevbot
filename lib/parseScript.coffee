@@ -25,6 +25,8 @@ fixedCharCodeAt = (str, idx) ->
 idRegex = /^[A-Za-z0-9_]$/
 
 module.exports = (name, content, callback) ->
+  name = name.toLowerCase()
+
   # Remove line-feeds
   content = content.replace /\r/g, ''
   
