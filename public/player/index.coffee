@@ -53,7 +53,7 @@ setupActors = (callback) ->
       keys: {}
 
     for componentDef in actorDef.components
-      behavior = gdev.behaviors[componentDef.name]
+      behavior = gdev.behaviors[componentDef.name.toLowerCase()]
       if behavior?
         actor.behaviors.push behavior
       else
