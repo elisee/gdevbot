@@ -124,12 +124,15 @@ module.exports = backend =
           (callback) -> writeActors project, callback
         ], callback
 
-  getProject: (projectId, user, callback) ->
+  getProject: (projectId, user, role, callback) ->
     project = projectsById[projectId.toLowerCase()]
     return process.nextTick ( -> callback new Error "No such project" ) if ! project?
 
     member = project.metadata.members.byId[user.id_str]
     return process.nextTick ( -> callback new Error "You're not a member, ask @#{project.metadata.members.list[0].cachedUsername} for access" ) if ! member?
+
+    if role == 'admin' and project.metadata.members.list.indexOf(member) != 0
+      return process.nextTick ( -> callback new Error "You're not the project admin" )
 
     if member.cachedUsername != user.screen_name
       writeMetadata project, (err) ->
@@ -143,6 +146,28 @@ module.exports = backend =
 
     callback null, project
     return
+
+  addMembers: (project, members, callback) ->
+    for member in members
+      continue if project.metadata.members.byId[member.id]?
+      project.metadata.members.list.push member
+      project.metadata.members.byId[member.id] = member
+
+    writeMetadata project, callback
+
+  removeMembers: (project, memberIds, callback) ->
+    for memberId in memberIds
+      member = project.metadata.members.byId[memberId]
+      continue if ! member?
+
+      memberIndex = project.metadata.members.list.indexOf(member)
+      # Prevent removing the project creator
+      continue if memberIndex == 0
+
+      project.metadata.members.list.splice memberIndex, 1
+      delete project.metadata.members.byId[memberId]
+
+    writeMetadata project, callback
 
   importAsset: (project, name, url, callback) ->
     return process.nextTick ( -> callback new Error "Invalid asset name" ) if ! nameRegex.test name

@@ -12,15 +12,37 @@ baseURL = "http://#{config.domain}"
 baseURL += ":#{config.publicPort}" if config.publicPort != 80
 
 
-parseCommand = (text, callback) ->
+parseCommand = (text, tweet, callback) ->
   command = {}
 
   tokens = text.split ' '
   command.type = tokens[0]
 
+  if tweet.entities?.user_mentions?.length != 1 and tokens[0] not in ['allow', 'deny']
+    # Ignore tweets with multiple mentions except for specific commands
+    return callback null, null
+  
   switch tokens[0]
     when 'create'
       return callback new Error "Invalid arguments" if tokens.length != 1
+
+    when 'allow'
+      return callback new Error "Invalid arguments" if ! tweet.entities?.user_mentions? or tweet.entities.user_mentions.length < 2
+
+      command.members = []
+
+      for mention in tweet.entities.user_mentions
+        continue if mention.id_str == config.twitter.userId
+        command.members.push id: mention.id_str, cachedUsername: mention.screen_name
+
+    when 'deny'
+      return callback new Error "Invalid arguments" if ! tweet.entities?.user_mentions? or tweet.entities.user_mentions.length < 2
+
+      command.memberIds = []
+
+      for mention in tweet.entities.user_mentions
+        continue if mention.id_str == config.twitter.userId
+        command.memberIds.push mention.id_str
 
     when 'import'
       return callback new Error "Invalid arguments" if tokens.length != 4
@@ -81,10 +103,21 @@ executeCommand = (command, projectId, user, callback) ->
     backend.createProject projectId, user, callback
     return
 
-  backend.getProject projectId, user, (err, project) ->
+  role = switch command.type
+    # These commands require admin privileges
+    when 'allow', 'deny', 'destroy' then 'admin'
+    else 'member'
+
+  backend.getProject projectId, user, role, (err, project) ->
     return callback err if err?
 
     switch command.type
+      when 'allow'
+        backend.addMembers project, command.members, callback
+
+      when 'deny'
+        backend.removeMembers project, command.memberIds, callback
+
       when 'import'
         backend.importAsset project, command.name, command.url, callback
 
@@ -148,13 +181,10 @@ dataCallback = (err, data, chunk, response) ->
   return if ! data.user.screen_name? or data.user.id_str == config.twitter.userId
   # Ignore tweets not mentioning the bot
   return if data.text.indexOf("@#{config.twitter.username}") == -1
-  # Ignore retweets or tweets mentioning multiple users
-  return if data.retweeted_status? or data.entities?.user_mentions?.length != 1
+  # Ignore retweets
+  return if data.retweeted_status?
   # Ignore tweets not containing a single project hashtag
-  return if data.entities?.hashtags?.length != 1
-
-  # Ensure the tweet isn't trying to mess with us
-  return if data.text.split('@').length - 1 > 1 or data.text.split('#').length - 1 > 1
+  return if data.entities?.hashtags?.length != 1 or data.text.split('#').length - 1 > 1
 
   utils.botlog "#{data.user.screen_name}: #{data.text}"
 
@@ -185,8 +215,11 @@ dataCallback = (err, data, chunk, response) ->
 
   replyTweetId = data.id_str
 
-  parseCommand commandText, (err, command) ->
+  parseCommand commandText, data, (err, command) ->
     return tweetCommandFailed data.user.screen_name, err.message, replyTweetId, logTweetFail if err?
+
+    # If no command has been generated, just return
+    return if ! command?
 
     executeCommand command, projectId, data.user, (err) ->
       return tweetCommandFailed data.user.screen_name, err.message, replyTweetId, logTweetFail if err?
