@@ -76,7 +76,7 @@ block content
       option(value="moveUpThenStop") Move up then stop
     script(src="js/playground.js")
 
-  section
+  section#events
     .Icon
       != imgEmoji(":sunrise:")
       |  
@@ -95,9 +95,7 @@ block content
     p.
       Code located after the curly loop emoji will be executed every frame for each actor it is attached to.
 
-
-
-  section
+  section#self
     .Icon
       != imgEmoji(":penguin:")
     h2 Current actor
@@ -107,7 +105,7 @@ block content
       A single script can be attached on a multitude of actors.
       The penguin emoji represents the actor the script is currently dealing with.
 
-  section
+  section#position
     .Icon
       != imgEmoji(":triangular_flag_on_post:")
       |  
@@ -139,7 +137,7 @@ block content
       |  
       mark -5
 
-  section
+  section#angle
     .Icon
       != imgEmoji(":o:")
       |  
@@ -166,7 +164,7 @@ block content
       |  
       mark 5
 
-  section
+  section#properties
     .Icon
       != imgEmoji(":key:")
     h2 Key
@@ -191,7 +189,7 @@ block content
     p.
       See below for an explanation about the scissors and why they're required.
 
-  section
+  section#assignment
     .Icon
       != imgEmoji(":baggage_claim:")
     h2 Assignment
@@ -213,10 +211,10 @@ block content
     p.
       A value can be any expression and you can use common arithmetic operators.
 
-  section
+  section#conditions
     .Icon
       != imgEmoji(":question:")
-    h2 Condition
+    h2 Conditions
     
 
     p.
@@ -231,7 +229,7 @@ block content
     p.
       You can use common comparison operators.
 
-  section
+  section#blocks
     .Icon
       != imgEmoji(":fast_forward:")
       |  
@@ -242,7 +240,7 @@ block content
     p.
       Group statements that should be affected by a condition. Or just because it's pretty.
 
-  section
+  section#scissors
     .Icon
       != imgEmoji(":scissors:")
     h2 End of expression
@@ -257,7 +255,7 @@ block content
       the engine to mean "position of the property x of the penguin", instead of "property x
       of the position of the penguin".
 
-  section
+  section#input
     .Icon
       != imgEmoji(":point_up:")
       |  
