@@ -160,7 +160,7 @@ tweetCommandFailed = (username, reason, replyTweetId, callback) ->
     callback err
 
 tweetCommandSuccess = (username, projectId, replyTweetId, callback) ->
-  msg = "@#{username} OK #{baseURL}/p/#{projectId}\n#{replyTweetId.slice(-5)}"
+  msg = "@#{username} OK #{baseURL}/p/#{projectId}?#{replyTweetId.slice(-5)}"
 
   if ! config.twitter.enableReplies
     utils.botlog "Would have tweeted: #{msg}"
