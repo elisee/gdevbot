@@ -173,9 +173,9 @@ module.exports = backend =
     return process.nextTick ( -> callback new Error "Invalid asset name" ) if ! nameRegex.test name
     return process.nextTick ( -> callback new Error "Asset name is already used" ) if project.assetNames.indexOf(name.toLowerCase()) != -1
 
-    mkdirp path.join(projectsPath, projectId.toLowerCase(), 'assets'), (err) ->
+    mkdirp path.join(projectsPath, project.id.toLowerCase(), 'assets'), (err) ->
       if err? and err.code != 'EEXIST'
-        utils.botlog "[#{projectId}] Unexpected error creating assets folder:"
+        utils.botlog "[#{project.id}] Unexpected error creating assets folder:"
         utils.botlog JSON.stringify err, null, 2
         return callback new Error 'Unexpected error' if err? 
 
@@ -184,9 +184,9 @@ module.exports = backend =
         return callback new Error 'Failed to download asset' if err? or response.statusCode != 200
 
         # TODO: Implement support for other asset types
-        gm(body).resize(1024,1024,'>').write path.join(projectsPath, projectId.toLowerCase(), 'assets', "#{name}.png"), (err) ->
+        gm(body).resize(1024,1024,'>').write path.join(projectsPath, project.id.toLowerCase(), 'assets', "#{name}.png"), (err) ->
           if err?
-            utils.botlog "[#{projectId}] Error processing import of #{url}:"
+            utils.botlog "[#{project.id}] Error processing import of #{url}:"
             utils.botlog JSON.stringify err, null, 2
             return callback new Error 'Failed to import asset'
 
@@ -200,18 +200,18 @@ module.exports = backend =
 
     parseScript name, content, (err, script) ->
       if err?
-        utils.botlog "[#{projectId}] Error parsing script #{name}:"
+        utils.botlog "[#{project.id}] Error parsing script #{name}:"
         utils.botlog JSON.stringify err, null, 2
         callback new Error 'Failed to parse script'
         return
 
-      assetsPath = path.join(projectsPath, projectId.toLowerCase(), 'assets')
+      assetsPath = path.join(projectsPath, project.id.toLowerCase(), 'assets')
       mkdirp assetsPath, (err) ->
         return callback new Error 'Unexpected error' if err? and err.code != 'EEXIST'
 
         fs.writeFile path.join(assetsPath, name + ".js"), script, (err) ->
           if err?
-            utils.botlog "[#{projectId}] Error writing script #{name}:"
+            utils.botlog "[#{project.id}] Error writing script #{name}:"
             utils.botlog JSON.stringify err, null, 2
             callback new Error 'Failed to save script'
             return
