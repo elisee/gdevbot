@@ -1,0 +1,39 @@
+extends gameLayout
+
+block content
+  #Loader
+    h1 Welcome to your new game
+
+    if assets.length == 0
+      p Start by importing an image.
+
+      pre.
+        @#{botUsername} ##{projectId} import <mark>name</mark> from <mark>url</mark>
+
+      p
+        a(href="https://twitter.com/intent/tweet?text=" + encodeURIComponent('@#{botUsername} ##{projectId} import [name] from [url]')) Tweet this command
+
+    else if actors.length == 0
+      p Your image was imported! You can now create an actor.
+
+      pre.
+        @#{botUsername} ##{projectId} new actor <mark>name</mark>
+
+      p
+        a(href="https://twitter.com/intent/tweet?text=" + encodeURIComponent('@#{botUsername} ##{projectId} new actor [name]')) Tweet this command
+
+    else if actors.length == 1 && actors[0].children.length == 0 && actors[0].components.length == 0
+      p Well done! Now add the image to your actor:
+
+      - var assetName = assets[0].split('.')[0];
+      pre.
+        @#{botUsername} ##{projectId} add <mark>#{assetName}</mark> to <mark>#{actors[0].name}</mark>
+
+      p
+        a(href="https://twitter.com/intent/tweet?text=" + encodeURIComponent('@#{botUsername} ##{projectId} add #{assetName} to #{actors[0].name}')) Tweet this command
+
+      p.
+        Once you're done, check out<br>
+        <a href="/emoji">the Emoji code documentation</a><br>
+        to make your game come to life.
+

@@ -249,15 +249,22 @@ app.get '/emoji', (req, res) -> res.render 'emoji'
 
 app.get '/p/:projectId', (req, res) ->
   fs.readdir path.join(__dirname, 'public', 'projects', req.params.projectId.toLowerCase(), 'assets'), (err, assets) ->
-    return console.log err.stack if err?
+    if err?
+      console.log err.stack
+      return res.render 'gameNotFound', projectId: req.params.projectId
 
     fs.readFile path.join(__dirname, 'public', 'projects', req.params.projectId.toLowerCase(), 'actors.json'), encoding: 'utf8', (err, actorsJSON) ->
       return console.log err.stack if err?
 
+      actors = JSON.parse actorsJSON
+
+      if assets.length == 0 or actors.length == 0 or (actors[0].children.length == 0 and actors[0].components.length == 0)
+        return res.render 'newGame', projectId: req.params.projectId, assets: assets, actors: actors, botUsername: config.twitter.username
+
       project =
         projectId: req.params.projectId
         assets: assets
-        actors: JSON.parse actorsJSON
+        actors: actors
 
       res.expose project
       res.render 'game', projectId: req.params.projectId
