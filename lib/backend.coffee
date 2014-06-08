@@ -173,24 +173,18 @@ module.exports = backend =
     return process.nextTick ( -> callback new Error "Invalid asset name" ) if ! nameRegex.test name
     return process.nextTick ( -> callback new Error "Asset name is already used" ) if project.assetNames.indexOf(name.toLowerCase()) != -1
 
-    mkdirp path.join(projectsPath, project.id.toLowerCase(), 'assets'), (err) ->
-      if err? and err.code != 'EEXIST'
-        utils.botlog "[#{project.id}] Unexpected error creating assets folder:"
-        utils.botlog JSON.stringify err, null, 2
-        return callback new Error 'Unexpected error' if err? 
+    # TODO: Abort request if size is too big
+    request { url, encoding: null }, (err, response, body) ->
+      return callback new Error 'Failed to download asset' if err? or response.statusCode != 200
 
-      # TODO: Abort request if size is too big
-      request { url, encoding: null }, (err, response, body) ->
-        return callback new Error 'Failed to download asset' if err? or response.statusCode != 200
+      # TODO: Implement support for other asset types
+      gm(body).resize(1024,1024,'>').write path.join(projectsPath, project.id.toLowerCase(), 'assets', "#{name}.png"), (err) ->
+        if err?
+          utils.botlog "[#{project.id}] Error processing import of #{url}:"
+          utils.botlog JSON.stringify err, null, 2
+          return callback new Error 'Failed to import asset'
 
-        # TODO: Implement support for other asset types
-        gm(body).resize(1024,1024,'>').write path.join(projectsPath, project.id.toLowerCase(), 'assets', "#{name}.png"), (err) ->
-          if err?
-            utils.botlog "[#{project.id}] Error processing import of #{url}:"
-            utils.botlog JSON.stringify err, null, 2
-            return callback new Error 'Failed to import asset'
-
-          callback null
+        callback null
 
       return
 
@@ -209,14 +203,7 @@ module.exports = backend =
       mkdirp assetsPath, (err) ->
         return callback new Error 'Unexpected error' if err? and err.code != 'EEXIST'
 
-        fs.writeFile path.join(assetsPath, name + ".js"), script, (err) ->
-          if err?
-            utils.botlog "[#{project.id}] Error writing script #{name}:"
-            utils.botlog JSON.stringify err, null, 2
-            callback new Error 'Failed to save script'
-            return
-
-          callback null
+        callback null
 
   createActor: (project, name, parentName, callback) ->
     return process.nextTick ( -> callback new Error "Invalid actor name" ) if name == 'root' or ! nameRegex.test name
