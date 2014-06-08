@@ -69,6 +69,7 @@ module.exports = backend =
         actorsTree:
           roots: []
           byName: {}
+          parentsByChildName: {}
 
       mkdirp path.join(projectsPath, projectId.toLowerCase(), 'assets'), (err) ->
         if err? and err.code != 'EEXIST'
