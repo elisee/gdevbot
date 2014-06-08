@@ -82,35 +82,9 @@ setupActors = (callback) ->
   callback()
 
 load = (callback) ->
-  setupAPI()
-
+  setupAPI ctx
   loadAssets -> setupActors -> callback()
   return
-
-setupAPI = ->
-  gdev.api = {}
-
-  gdev.api.SetPosition = (self, x, y) ->
-    self.transform.x = x
-    self.transform.y = y
-    return
-
-  gdev.api.GetPosition = (self) -> return { keys: { x: self.transform.x, y: self.transform.y } }
-
-  gdev.api.Move = (self, dx, dy) ->
-    self.transform.x += dx
-    self.transform.y += dy
-    return
-
-  gdev.api.SetAngle = (self, angle) ->
-    self.transform.angle = angle
-    return
-
-  gdev.api.GetAngle = (self) -> return self.transform.angle
-
-  gdev.api.Rotate = (self, dAngle) ->
-    self.transform.angle += dAngle
-    return
 
 walkActorUpdate = (actor) ->
   behavior.Update actor for behavior in actor.behaviors
@@ -136,6 +110,8 @@ lastTimestamp = 0
 accumulatedTime = 0
 
 tick = (timestamp) ->
+  gdev.api.input.tick()
+
   requestAnimationFrame tick
   ctx.canvas.width = window.innerWidth
   ctx.canvas.height = window.innerHeight

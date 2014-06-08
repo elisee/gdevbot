@@ -49,33 +49,30 @@ module.exports = (name, content, callback) ->
     if typeof val == 'number'
       # Emoji
       emojis =
-        0x1f305:  type: 'awake',              name: 'sunrise'
-        0x27b0:   type: 'update',             name: 'curly loop'
+        0x1f305:  type: 'awake',              shortcode: 'sunrise'
+        0x27b0:   type: 'update',             shortcode: 'curly_loop'
 
-        0x1f427:  type: 'self',               name: 'penguin'         
-        0x2702:   type: 'scissors',           name: 'black scissors'
-        0x2704:   type: 'scissors',           name: 'white scissors'
-        # 0x1f517:  type: 'link',               name: 'link'
-        0x1f511:  type: 'key',                name: 'key'
+        0x1f427:  type: 'self',               shortcode: 'penguin'         
+        0x2702:   type: 'scissors',           shortcode: 'scissors'
+        0x2704:   type: 'scissors',           shortcode: 'white_scissors'
+        # 0x1f517:  type: 'link',               shortcode: 'link'
+        0x1f511:  type: 'key',                shortcode: 'key'
 
-        0x1f6c4:  type: 'assign',             name: 'baggage claim'
+        0x1f6c4:  type: 'assign',             shortcode: 'baggage_claim'
 
-        0x1f6a9:  type: 'position',           name: 'flag with pole'
-        0x1f697:  type: 'move',               name: 'automobile'
+        0x1f6a9:  type: 'position',           shortcode: 'triangular_flag_on_post'
+        0x1f697:  type: 'move',               shortcode: 'car'
 
-        0x2b55:   type: 'angle',              name: 'heavy large circle'
-        0x1f503:  type: 'rotate',             name: 'clockwise downwards and upwards open circle arrows'
-        0x1f504:  type: 'rotate',             name: 'anticlockwise downwards and upwards open circle arrows'
+        0x2b55:   type: 'angle',              shortcode: 'o'
+        0x1f503:  type: 'rotate',             shortcode: 'arrows_clockwise'
+        0x1f504:  type: 'rotate',             shortcode: 'arrows_anticlockwise'
 
-        0x261d:   type: 'touchPosition',      name: 'white up-pointing backhand index'
-        0x270b:   type: 'touchDelta',         name: 'waving hand sign'
+        0x261d:   type: 'touchPosition',      shortcode: 'point_up'
+        0x1f44b:  type: 'touchDelta',         shortcode: 'wave'
 
-        0x2194:   type: 'horizontal',         name: 'left-right arrow'
-        0x2195:   type: 'vertical',           name: 'up-down arrow'
-
-        0x2753:   type: 'if',                 name: 'black question mark ornament'
-        0x23e9:   type: 'blockStart',         name: 'black right-pointing double triangle'
-        0x23ea:   type: 'blockEnd',           name: 'black right-pointing double triangle'
+        0x2753:   type: 'if',                 shortcode: 'question'
+        0x23e9:   type: 'blockStart',         shortcode: 'fast_forward'
+        0x23ea:   type: 'blockEnd',           shortcode: 'rewind'
 
       emoji = emojis[val] or { type: 'unknown' }
       console.log val
@@ -107,13 +104,13 @@ module.exports = (name, content, callback) ->
         console.log activeCodeBlock
 
       when 'position'
-        codeBlocks[activeCodeBlock] += "gdev.api.SetPosition(#{consumeExpression()}, #{consumeExpression()}, #{consumeExpression()});"
+        codeBlocks[activeCodeBlock] += "gdev.api.actor.SetPosition(#{consumeExpression()}, #{consumeExpression()}, #{consumeExpression()});"
       when 'move'
-        codeBlocks[activeCodeBlock] += "gdev.api.Move(#{consumeExpression()}, #{consumeExpression()}, #{consumeExpression()});"
+        codeBlocks[activeCodeBlock] += "gdev.api.actor.Move(#{consumeExpression()}, #{consumeExpression()}, #{consumeExpression()});"
       when 'angle'
-        codeBlocks[activeCodeBlock] += "gdev.api.SetAngle(#{consumeExpression()}, #{consumeExpression()});"
+        codeBlocks[activeCodeBlock] += "gdev.api.actor.SetAngle(#{consumeExpression()}, #{consumeExpression()});"
       when 'rotate'
-        codeBlocks[activeCodeBlock] += "gdev.api.Rotate(#{consumeExpression()}, #{consumeExpression()});"
+        codeBlocks[activeCodeBlock] += "gdev.api.actor.Rotate(#{consumeExpression()}, #{consumeExpression()});"
 
       when 'if'
         codeBlocks[activeCodeBlock] += "if(#{consumeExpression()})"
@@ -147,6 +144,10 @@ module.exports = (name, content, callback) ->
         code = "gdev.api.GetPosition(#{consumeExpression()})"
       when 'angle'
         code = "gdev.api.GetAngle(#{consumeExpression()})"
+      when 'touchPosition'
+        code = "gdev.api.input.GetTouchPosition()"
+      when 'touchDelta'
+        code = "gdev.api.input.GetTouchDelta()"
       when 'self'
         code = 'self'
       when 'id'

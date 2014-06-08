@@ -15,7 +15,8 @@
     "express-expose": "^0.3.3",
     "connect-slashes": "^1.2.0",
     "html-entities": "^1.0.10",
-    "async": "^0.9.0"
+    "async": "^0.9.0",
+    "string.fromcodepoint": "^0.2.0"
   },
   "devDependencies": {
     "gutil": "^1.1.0",

@@ -5,8 +5,14 @@ block title
 
 block content
   style.
+    section {
+      padding-bottom: 1.5em;
+      border-bottom: 1px solid #ccc;
+    }
+
     section > .Icon {
       float: right;
+      padding-left: 0.5em;
     }
 
     pre { z-index: -1; }
@@ -35,27 +41,30 @@ block content
     h2 Playground
 
     .Buttons
-      img(src="images/emoji/1f305.png",alt="🌅",data-short-code="sunrise")
-      img(src="images/emoji/27b0.png",alt="➰",data-short-code="curly_loop")
+      != imgEmoji(":sunrise:")
+      != imgEmoji(":curly_loop:")
 
-      img(src="images/emoji/1f427.png",alt="🐧",data-short-code="penguin")
+      != imgEmoji(":penguin:")
 
-      img(src="images/emoji/1f6a9.png",alt="🚩",data-short-code="triangular_flag_on_post")
-      img(src="images/emoji/1f697.png",alt="🚗",data-short-code="car")
+      != imgEmoji(":triangular_flag_on_post:")
+      != imgEmoji(":car:")
 
-      img(src="images/emoji/2b55.png",alt="⭕",data-short-code="o")
-      img(src="images/emoji/1f503.png",alt="🔃",data-short-code="arrows_clockwise")
+      != imgEmoji(":o:")
+      != imgEmoji(":arrows_clockwise:")
 
-      img(src="images/emoji/1f511.png",alt="🔑",data-short-code="key")
+      != imgEmoji(":key:")
 
-      img(src="images/emoji/1f6c4.png",alt="🛄",data-short-code="baggage_claim")
+      != imgEmoji(":baggage_claim:")
 
-      img(src="images/emoji/2753.png",alt="❓",data-short-code="question")
+      != imgEmoji(":question:")
 
-      img(src="images/emoji/23e9.png",alt="⏩",data-short-code="fast_forward")
-      img(src="images/emoji/23ea.png",alt="⏪",data-short-code="rewind")
+      != imgEmoji(":fast_forward:")
+      != imgEmoji(":rewind:")
 
-      img.Icon(src="images/emoji/2702.png",alt="✂",data-short-code="scissors")
+      != imgEmoji(":scissors:")
+
+      != imgEmoji(":point_up:")
+      != imgEmoji(":wave:")
 
     textarea
     button#MakeScriptButton Generate tweetable script
@@ -69,11 +78,11 @@ block content
 
   section
     .Icon
-      img(src="images/emoji/1f305.png",alt="🌅")
+      != imgEmoji(":sunrise:")
       |  
-      img(src="images/emoji/27b0.png",alt="➰")
+      != imgEmoji(":curly_loop:")
     h2 Init, Once, Always
-    pre :sunrise: :curly_loop:
+    
 
     p.
       By default, your code will be executed a single time as soon as the game is loaded.
@@ -89,9 +98,10 @@ block content
 
 
   section
-    img.Icon(src="images/emoji/1f427.png",alt="🐧")
+    .Icon
+      != imgEmoji(":penguin:")
     h2 Current actor
-    pre :penguin:
+    
 
     p.
       A single script can be attached on a multitude of actors.
@@ -99,19 +109,19 @@ block content
 
   section
     .Icon
-      img(src="images/emoji/1f6a9.png",alt="🚩")
+      != imgEmoji(":triangular_flag_on_post:")
       |  
-      img(src="images/emoji/1f697.png",alt="🚗")
+      != imgEmoji(":car:")
     h2 Position, Move
-    pre :triangular_flag_on_post: :car:
+    
 
     p.
       Use the flag to set or get an actor's position.
 
     pre
-      img(src="images/emoji/1f6a9.png",alt="🚩")
+      != imgEmoji(":triangular_flag_on_post:")
       mark
-        img(src="images/emoji/1f427.png",alt="🐧")
+        != imgEmoji(":penguin:")
       |  
       mark 20
       |  
@@ -121,9 +131,9 @@ block content
       Use the car to move an actor by a certain offset.
 
     pre
-      img(src="images/emoji/1f697.png",alt="🚗")
+      != imgEmoji(":car:")
       mark
-        img(src="images/emoji/1f427.png",alt="🐧")
+        != imgEmoji(":penguin:")
       |  
       mark 10
       |  
@@ -131,21 +141,18 @@ block content
 
   section
     .Icon
-      img(src="images/emoji/2b55.png",alt="⭕")
+      != imgEmoji(":o:")
       |  
-      img(src="images/emoji/1f503.png",alt="🔃")
+      != imgEmoji(":arrows_clockwise:")
     h2 Angle, Rotate
-
-    pre.
-      :o: :arrows_clockwise:
 
     p.
       Use the circle to set or get an actor's angle.
 
     pre
-      img(src="images/emoji/2b55.png",alt="🚩")
+      != imgEmoji(":o:")
       mark
-        img(src="images/emoji/1f427.png",alt="🐧")
+        != imgEmoji(":penguin:")
       |  
       mark 45
 
@@ -153,16 +160,17 @@ block content
       Use the clockwise arrows to rotate an actor.
 
     pre
-      img(src="images/emoji/1f503.png",alt="🔃")
+      != imgEmoji(":arrows_clockwise:")
       mark
-        img(src="images/emoji/1f427.png",alt="🐧")
+        != imgEmoji(":penguin:")
       |  
       mark 5
 
   section
-    img.Icon(src="images/emoji/1f511.png",alt="🔑")
+    .Icon
+      != imgEmoji(":key:")
     h2 Key
-    pre :key:
+    
 
     p.
       The key lets you access properties of an object.
@@ -172,11 +180,11 @@ block content
 
     pre
       mark
-        img(src="images/emoji/1f6a9.png",alt="🚩")
+        != imgEmoji(":triangular_flag_on_post:")
       mark
-        img(src="images/emoji/1f427.png",alt="🐧")
-      img(src="images/emoji/2702.png",alt="✂")
-      img(src="images/emoji/1f511.png",alt="🔑")
+        != imgEmoji(":penguin:")
+      != imgEmoji(":scissors:")
+      != imgEmoji(":key:")
       mark
         | x
 
@@ -184,18 +192,19 @@ block content
       See below for an explanation about the scissors and why they're required.
 
   section
-    img.Icon(src="images/emoji/1f6c4.png",alt="🛄 ")
+    .Icon
+      != imgEmoji(":baggage_claim:")
     h2 Assignment
-    pre :baggage_claim:
+    
 
     p.
       You can assign values to properties:
 
     pre
-      img(src="images/emoji/1f6c4.png",alt="🛄")
+      != imgEmoji(":baggage_claim:")
       mark
-        img(src="images/emoji/1f427.png",alt="🐧")
-      img(src="images/emoji/1f511.png",alt="🔑 ")
+        != imgEmoji(":penguin:")
+      != imgEmoji(":key:")
       |  
       mark prop
       |  
@@ -206,15 +215,15 @@ block content
 
   section
     .Icon
-      img(src="images/emoji/2753.png",alt="❓")
+      != imgEmoji(":question:")
     h2 Condition
-    pre :question:
+    
 
     p.
       Only execute the statement right after if the condition turns out to be true.
 
     pre
-      img(src="images/emoji/2753.png",alt="❓")
+      != imgEmoji(":question:")
       mark condition
       |  
       mark statement
@@ -224,19 +233,20 @@ block content
 
   section
     .Icon
-      img(src="images/emoji/23e9.png",alt="⏩")
+      != imgEmoji(":fast_forward:")
       |  
-      img(src="images/emoji/23ea.png",alt="⏪")
+      != imgEmoji(":rewind:")
     h2 Code block
-    pre :fast_forward: :rewind:
+    
 
     p.
       Group statements that should be affected by a condition. Or just because it's pretty.
 
   section
-    img.Icon(src="images/emoji/2702.png",alt="✂")
+    .Icon
+      != imgEmoji(":scissors:")
     h2 End of expression
-    pre :scissors:
+    
 
     p.
       Since emoji code doesn't use parentheses to delimit expressions,
@@ -246,3 +256,46 @@ block content
       If we didn't use the scissors in the Key example above, the code would be interpreted by
       the engine to mean "position of the property x of the penguin", instead of "property x
       of the position of the penguin".
+
+  section
+    .Icon
+      != imgEmoji(":point_up:")
+      |  
+      != imgEmoji(":wave:")
+    h2 Touch position, touch delta
+
+    p.
+      The pointing finger represents the touch position on touch devices,
+      or the mouse position while the left button is pressed on other devices.
+
+    p.
+      You can use it to make an actor follow your pointer:
+
+    pre
+      != imgEmoji(":curly_loop:")
+      != imgEmoji(":triangular_flag_on_post:")
+      != imgEmoji(":penguin:")
+      != imgEmoji(":point_up:")
+      != imgEmoji(":key:")
+      | x
+      != imgEmoji(":point_up:")
+      != imgEmoji(":key:")
+      | y
+
+    p.
+      The waving hand represents the movement of the finger/pointing device
+      that happened between the previous frame and the current one.
+
+    p.
+      You can use it to drag an actor with your pointer:
+
+    pre
+      != imgEmoji(":curly_loop:")
+      != imgEmoji(":triangular_flag_on_post:")
+      != imgEmoji(":penguin:")
+      != imgEmoji(":wave:")
+      != imgEmoji(":key:")
+      | x
+      != imgEmoji(":wave:")
+      != imgEmoji(":key:")
+      | y

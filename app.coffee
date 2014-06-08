@@ -246,6 +246,28 @@ app.use require('connect-slashes') false
 
 app.locals.botUsername = config.twitter.username
 
+emojisByShortcode =
+  ":sunrise:": 0x1f305
+  ":curly_loop:": 0x27b0
+  ":penguin:": 0x1f427
+  ":triangular_flag_on_post:": 0x1f6a9
+  ":car:": 0x1f697
+  ":o:": 0x2b55
+  ":arrows_clockwise:": 0x1f503
+  ":key:": 0x1f511
+  ":baggage_claim:": 0x1f6c4
+  ":question:": 0x2753
+  ":fast_forward:": 0x23e9
+  ":rewind:": 0x23ea
+  ":scissors:": 0x2702
+  ":point_up:": 0x261d
+  ":wave:": 0x1f44b
+
+require 'string.fromcodepoint'
+app.locals.imgEmoji = (shortcode) ->
+  emojiValue = emojisByShortcode[shortcode] || '?'.charCodeAt(0)
+  """<img src="images/emoji/#{emojiValue.toString(16)}.png", alt="#{String.fromCodePoint(emojiValue)}", title="#{shortcode}">"""
+
 app.get '/', (req, res) -> res.render 'index'
 app.get '/commands', (req, res) -> res.render 'commands'
 app.get '/emoji', (req, res) -> res.render 'emoji'
