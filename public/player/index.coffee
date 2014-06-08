@@ -139,8 +139,8 @@ tick = (timestamp) ->
 
   return
 
+window.gdev = vars: {}
 
-window.gdev = {}
 canvas = document.querySelector("canvas")
 ctx = canvas.getContext("2d")
 

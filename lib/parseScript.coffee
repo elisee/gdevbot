@@ -158,7 +158,7 @@ module.exports = (name, content, callback) ->
       when 'self'
         code = 'self'
       when 'id'
-        code = "gdevAPI.vars.#{token.value}"
+        code = "gdev.vars.#{token.value}"
       else
         # Not an expression? Put the token back in its place and return
         tokenStack.unshift token
