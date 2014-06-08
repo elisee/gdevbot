@@ -144,9 +144,9 @@ module.exports = (name, content, callback) ->
       when 'number'
         code = token.value.toString()
       when 'position'
-        code = "gdev.api.GetPosition(#{consumeExpression()})"
+        code = "gdev.api.actor.GetPosition(#{consumeExpression()})"
       when 'angle'
-        code = "gdev.api.GetAngle(#{consumeExpression()})"
+        code = "gdev.api.actor.GetAngle(#{consumeExpression()})"
       when 'touchPosition'
         code = "gdev.api.input.GetTouchPosition()"
       when 'touchDelta'
