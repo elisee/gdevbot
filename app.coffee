@@ -75,28 +75,38 @@ parseCommand = (text, callback) ->
   callback null, command
 
 
-executeCommand = (command, projectId, callback) ->
-  switch command.type
-    when 'create'
-      backend.createProject projectId, callback
+executeCommand = (command, projectId, user, callback) ->
 
-    when 'import'
-      backend.importAsset projectId, command.name, command.url, callback
+  if command.type == 'create'
+    backend.createProject projectId, user, callback
+    return
 
-    when 'script'
-      backend.addScript projectId, command.name, command.content, callback
+  backend.getProject projectId, user, (err, project) ->
+    return callback err if err?
 
-    when 'new actor'
-      backend.createActor projectId, command.name, command.parentName, callback
+    switch command.type
+      when 'import'
+        backend.importAsset project, command.name, command.url, callback
 
-    when 'add'
-      backend.addComponent projectId, command.actorName, command.assetName, callback
+      when 'script'
+        backend.addScript project, command.name, command.content, callback
 
-    when 'remove'
-      backend.removeComponent projectId, command.actorName, command.assetName, callback
+      when 'new actor'
+        backend.createActor project, command.name, command.parentName, callback
 
-    when 'reparent'
-      backend.reparentActor projectId, command.name, command.parentName, callback
+      when 'add'
+        backend.addComponent project, command.actorName, command.assetName, callback
+
+      when 'remove'
+        backend.removeComponent project, command.actorName, command.assetName, callback
+
+      when 'reparent'
+        backend.reparentActor project, command.name, command.parentName, callback
+
+      else
+        callback new error 'No such command'
+
+    return
 
   return
 
@@ -178,7 +188,7 @@ dataCallback = (err, data, chunk, response) ->
   parseCommand commandText, (err, command) ->
     return tweetCommandFailed data.user.screen_name, err.message, replyTweetId, logTweetFail if err?
 
-    executeCommand command, projectId, (err) ->
+    executeCommand command, projectId, data.user, (err) ->
       return tweetCommandFailed data.user.screen_name, err.message, replyTweetId, logTweetFail if err?
       tweetCommandSuccess data.user.screen_name, projectId, replyTweetId, logTweetFail
 
