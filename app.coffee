@@ -277,9 +277,7 @@ app.get '/emoji', (req, res) -> res.render 'emoji'
 
 app.get '/p/:projectId', (req, res) ->
   fs.readdir path.join(__dirname, 'public', 'projects', req.params.projectId.toLowerCase(), 'assets'), (err, assets) ->
-    if err?
-      console.log err.stack
-      return res.render 'gameNotFound', projectId: req.params.projectId
+    return res.render 'gameNotFound', projectId: req.params.projectId if err?
 
     fs.readFile path.join(__dirname, 'public', 'projects', req.params.projectId.toLowerCase(), 'actors.json'), encoding: 'utf8', (err, actorsJSON) ->
       return console.log err.stack if err?
