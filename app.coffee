@@ -241,6 +241,7 @@ path = require 'path'
 app = express()
 app.set 'view engine', 'jade'
 
+app.use '/images/emoji', express.static __dirname + '/public/images/emoji', { maxAge: 1000 * 3600 * 24 }
 app.use express.static __dirname + '/public'
 app.use require('connect-slashes') false
 
