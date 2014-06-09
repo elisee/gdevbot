@@ -76,6 +76,7 @@ module.exports = (name, content, callback) ->
         0x261d:   type: 'touchEnd',           shortcode: 'point_up'
 
         0x2753:   type: 'if',                 shortcode: 'question'
+        0x1f500:  type: 'not',                shortcode: 'twisted_rightwards_arrows'
         0x23e9:   type: 'blockStart',         shortcode: 'fast_forward'
         0x23ea:   type: 'blockEnd',           shortcode: 'rewind'
 
@@ -146,6 +147,8 @@ module.exports = (name, content, callback) ->
     switch token.type
       when 'number'
         code = token.value.toString()
+      when 'not'
+        code = "!(#{consumeExpression()})"
       when 'position'
         code = "gdev.api.actor.GetPosition(#{consumeExpression()})"
       when 'angle'
