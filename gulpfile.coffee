@@ -19,6 +19,4 @@ tasks = [ 'copyPlayerDependencies', 'coffee' ]
 gulp.task 'watch', tasks, ->
   gulp.watch './public/**/*.coffee', [ 'coffee' ]
 
-tasks = tasks.slice(0)
-tasks.push 'watch'
 gulp.task 'default', tasks
