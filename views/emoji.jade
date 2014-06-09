@@ -15,7 +15,8 @@ block content
       padding-left: 0.5em;
     }
 
-    pre img { width: 36px; vertical-align: bottom; }
+    pre img { width: 36px; height: 36px; vertical-align: bottom; }
+    .ScriptPreview img { width: 28px; height: 24px; padding: 0 2px; vertical-align: bottom; }
 
     section { clear: both; }
 
@@ -48,9 +49,17 @@ block content
     .Playground textarea {
       width: 100%;
       max-width: 100%;
-      min-height: 240px;
+      min-height: 120px;
       padding: 0.5em;
       outline: none;
+    }
+
+    .ScriptPreview {
+      min-height: 120px;
+      padding: 0.5em;
+      border: 1px solid #ccc;
+      background: #f5f5f5;
+      margin-bottom: 0.25em;
     }
 
     .EditorToolbar {
@@ -60,24 +69,49 @@ block content
     #ExampleSelect {
       margin-left: 0.25em;
       flex: 1;
-    }    
+      padding: 0.25em 0.5em;
+      border-radius: 0.25em;
+      border: 1px solid #ccc;
+    }
 
-    #MakeScriptButton, #ExampleSelect, .Playground textarea {
-      padding: 0.5em;
+    #TweetScriptButton, #ExampleSelect, .Playground textarea {
+      padding: 0.25em 0.5em;
       font: inherit;
     }
+
+    #TweetScriptButton {
+      display: inline-block;
+      padding: 0.25em 0.5em;
+      text-decoration: none;
+      background: #ddd;
+      border-radius: 0.25em;
+      color: #666;
+      font-weight: bold;
+      border: 1px solid #ccc;
+    }
+
+
+    #TweetScriptButton:hover {
+      background: #dadada;
+      color: #444;
+    }
+
+    #TweetScriptButton:active {
+      background: #ccc;
+      color: #fff;
+    }
+
 
   p.
     A tweet-size scripting language for a tweet-based game making tool.
 
   section.Playground
-    h2 Playground
-
     .PlaygroundFlex
       .EditorContainer
-        textarea
+        textarea(placeholder="Type in here & insert emojis by clicking on the right")
+        .ScriptPreview
         .EditorToolbar
-          button#MakeScriptButton Generate tweet
+          a(href="#")#TweetScriptButton Tweet this script
           |  
           select#ExampleSelect
             option (Pick an example)
