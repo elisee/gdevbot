@@ -8,7 +8,7 @@ buttonsElt.addEventListener 'click', (event) ->
   text = textareaElt.value
   textareaElt.value = text.substring(0, textareaElt.selectionStart) + event.target.dataset.shortcode  + text.substring textareaElt.selectionStart
 
-  newSelectionStart = textareaElt.selectionStart + event.target.dataset.shortcode.length + 2
+  newSelectionStart = textareaElt.selectionStart + event.target.dataset.shortcode.length
   textareaElt.setSelectionRange newSelectionStart, newSelectionStart
   textareaElt.focus()
 
