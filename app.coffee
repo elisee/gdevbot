@@ -227,7 +227,9 @@ dataCallback = (err, data, chunk, response) ->
 
     return
 
-endCallback = -> utils.botlog "Stream ended, somehow."
+endCallback = ->
+  utils.botlog "Disconnected, somehow. Reconnecting."
+  twitter.getStream 'userstream', {}, config.twitter.accessToken, config.twitter.accessTokenSecret, dataCallback, endCallback
 
 twitter.getStream 'userstream', {}, config.twitter.accessToken, config.twitter.accessTokenSecret, dataCallback, endCallback
 utils.botlog "Started."
