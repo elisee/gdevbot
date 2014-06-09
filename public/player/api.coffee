@@ -142,10 +142,20 @@ setupInputAPI = (ctx) ->
     HasTouchEnded: -> touchEnded
   }
 
+setupMathAPI = -> {
+    Random: (min, max) ->
+      if min? or max?
+        _.random min, max
+      else
+        Math.random()
+        
+  }
+
 window.setupAPI = (ctx) ->
   gdev.api =
     actor: setupActorAPI ctx
     input: setupInputAPI ctx
+    math: setupMathAPI ctx
 
   # Old API for compatibility with older games
   gdev.api.SetPosition = gdev.api.actor.SetPosition

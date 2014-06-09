@@ -15,23 +15,56 @@ block content
       padding-left: 0.5em;
     }
 
-    pre { z-index: -1; }
     pre img { width: 36px; vertical-align: bottom; }
 
     section { clear: both; }
+
+    .PlaygroundFlex {
+      display: flex;
+      margin-top: 1em;
+    }
+
+    .EditorContainer {
+      flex: 1;
+      margin-right: 1em;
+    }
+
+    .Playground .Buttons {
+      text-align: left;
+    }
 
     .Playground .Buttons img {
       width: 36px;
       height: 36px;
       margin: 0.125em;
       cursor: pointer;
+      opacity: 0.6;
+    }
+
+    .Playground .Buttons img:hover {
+      opacity: 1;
     }
 
     .Playground textarea {
       width: 100%;
-      min-height: 150px;
+      max-width: 100%;
+      min-height: 240px;
       padding: 0.5em;
       outline: none;
+    }
+
+    .EditorToolbar {
+      display: flex;
+    }
+
+    #ExampleSelect {
+      margin-left: 0.25em;
+      flex: 1;
+    }    
+
+    #MakeScriptButton, #ExampleSelect, .Playground textarea {
+      padding: 0.5em;
+      font: inherit;
     }
 
   p.
@@ -40,43 +73,50 @@ block content
   section.Playground
     h2 Playground
 
-    .Buttons
-      != imgEmoji(":sunrise:")
-      != imgEmoji(":curly_loop:")
+    .PlaygroundFlex
+      .EditorContainer
+        textarea
+        .EditorToolbar
+          button#MakeScriptButton Generate tweet
+          |  
+          select#ExampleSelect
+            option (Pick an example)
+            option(value="setPositionOnSunrise") Set actor position on sunrise
+            option(value="moveRightwards") Move actor to the right continously
+            option(value="moveUpThenStop") Move up then stop
+            option(value="dragHorizontally") Drag with finger horizontally
 
-      != imgEmoji(":penguin:")
+      .Buttons
+        div
+          != imgEmoji(":sunrise:")
+          != imgEmoji(":curly_loop:")
 
-      != imgEmoji(":triangular_flag_on_post:")
-      != imgEmoji(":car:")
+        div
+          != imgEmoji(":penguin:")
+          != imgEmoji(":baggage_claim:")
+          != imgEmoji(":key:")
+          != imgEmoji(":scissors:")
 
-      != imgEmoji(":o:")
-      != imgEmoji(":arrows_clockwise:")
+        div
+          != imgEmoji(":triangular_flag_on_post:")
+          != imgEmoji(":car:")
+          != imgEmoji(":o:")
+          != imgEmoji(":arrows_clockwise:")
 
-      != imgEmoji(":key:")
+        div
+          != imgEmoji(":question:")
+          != imgEmoji(":twisted_rightwards_arrows:")
+          != imgEmoji(":fast_forward:")
+          != imgEmoji(":rewind:")
 
-      != imgEmoji(":baggage_claim:")
+        div
+          != imgEmoji(":hand:")
+          != imgEmoji(":wave:")
+          != imgEmoji(":point_up_2:")
+          != imgEmoji(":point_up:")
 
-      != imgEmoji(":question:")
-
-      != imgEmoji(":fast_forward:")
-      != imgEmoji(":rewind:")
-
-      != imgEmoji(":scissors:")
-
-      != imgEmoji(":hand:")
-      != imgEmoji(":wave:")
-      != imgEmoji(":point_up_2:")
-      != imgEmoji(":point_up:")
-
-    textarea
-    button#MakeScriptButton Generate tweetable script
-    |  
-    select#ExampleSelect
-      option (Pick an example)
-      option(value="setPositionOnSunrise") Set actor position on sunrise
-      option(value="moveRightwards") Move actor to the right continously
-      option(value="moveUpThenStop") Move up then stop
-      option(value="dragHorizontally") Drag with finger horizontally
+        div
+          != imgEmoji(":random:")
     script(src="js/playground.js")
 
   section#events
@@ -86,7 +126,6 @@ block content
       != imgEmoji(":curly_loop:")
     h2 Init, Once, Always
     
-
     p.
       By default, your code will be executed a single time as soon as the game is loaded.
       This is useful for global initialization code that isn't linked to any actor.
@@ -103,7 +142,6 @@ block content
       != imgEmoji(":penguin:")
     h2 Current actor
     
-
     p.
       A single script can be attached on a multitude of actors.
       The penguin emoji represents the actor the script is currently dealing with.
@@ -115,7 +153,6 @@ block content
       != imgEmoji(":car:")
     h2 Position, Move
     
-
     p.
       Use the flag to set or get an actor's position.
 
@@ -172,7 +209,6 @@ block content
       != imgEmoji(":key:")
     h2 Key
     
-
     p.
       The key lets you access properties of an object.
 
@@ -197,7 +233,6 @@ block content
       != imgEmoji(":baggage_claim:")
     h2 Assignment
     
-
     p.
       You can assign values to properties:
 
@@ -217,8 +252,8 @@ block content
   section#conditions
     .Icon
       != imgEmoji(":question:")
+      != imgEmoji(":twisted_rightwards_arrows:")
     h2 Conditions
-    
 
     p.
       Only execute the statement right after if the condition turns out to be true.
@@ -230,15 +265,21 @@ block content
       mark statement
 
     p.
-      You can use common comparison operators.
+      You can use common comparison operators like &lt; ≤ = ≥ &gt; ≠.
+
+    p.
+      You can negate an expression (make something truthy false and vice versa) with the twisted arrows:
+
+    pre
+      != imgEmoji(":twisted_rightwards_arrows:")
+      mark expression
 
   section#blocks
     .Icon
       != imgEmoji(":fast_forward:")
       |  
       != imgEmoji(":rewind:")
-    h2 Code block
-    
+    h2 Code blocks
 
     p.
       Group statements that should be affected by a condition. Or just because it's pretty.
@@ -247,7 +288,6 @@ block content
     .Icon
       != imgEmoji(":scissors:")
     h2 End of expression
-    
 
     p.
       Since emoji code doesn't use parentheses to delimit expressions,
@@ -325,3 +365,31 @@ block content
       != imgEmoji(":hand:")
       != imgEmoji(":key:")
       | y
+
+  section#random
+    .Icon
+      != imgEmoji(":random:")
+    h2 Random number generator
+
+    p.
+      The die lets you generate a random number.<br>
+      There are two ways to use it.
+
+    p.
+      Put two numerical expressions right after it and it will generate
+      a random integer between those two numbers (boundaries included).
+
+    pre
+      != imgEmoji(":random:")
+      mark 1
+      |  
+      mark 6
+
+    p.
+      If instead you pass no values (using a pair of pair of scissors), it will return a floating-point number
+      between 0 and 1.
+
+    pre
+      != imgEmoji(":random:")
+      != imgEmoji(":scissors:")
+      != imgEmoji(":scissors:")

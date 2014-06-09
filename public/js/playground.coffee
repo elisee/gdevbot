@@ -1,4 +1,4 @@
-buttonsElt = document.querySelector('.Playground .Buttons')
+buttonsElt = document.querySelector('.PlaygroundFlex .Buttons')
 textareaElt = document.querySelector('.Playground textarea')
 
 buttonsElt.addEventListener 'click', (event) ->
@@ -19,10 +19,11 @@ document.getElementById('MakeScriptButton').addEventListener 'click', (event) ->
   code = code.trim().replace /\s{2,}/g, ' '
   code = code.replace /: :/g, '::'
 
-  for buttonElt in buttonsElt.children
-    code = code.replace new RegExp(buttonElt.dataset.shortcode, 'g'), buttonElt.getAttribute 'alt'
+  for group in buttonsElt.children
+    for buttonElt in group.children
+      code = code.replace new RegExp(buttonElt.dataset.shortcode, 'g'), buttonElt.getAttribute 'alt'
 
-   prompt 'Copy to Twitter, fill in the blanks, tweet!', "@gdevbot #[project] script [script] #{code}"
+   prompt 'Copy to Twitter, fill in the blanks, tweet!', "@gdevbot #[project] script [name] #{code}"
 
 
 examples =

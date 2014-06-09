@@ -55,34 +55,31 @@ module.exports = (name, content, callback) ->
         0x27b0:   type: 'update',             shortcode: 'curly_loop'
 
         0x1f427:  type: 'self',               shortcode: 'penguin'         
+        0x1f6c4:  type: 'assign',             shortcode: 'baggage_claim'
+        0x1f511:  type: 'key',                shortcode: 'key'
         0x2702:   type: 'scissors',           shortcode: 'scissors'
         0x2704:   type: 'scissors',           shortcode: 'white_scissors'
-        # 0x1f517:  type: 'link',               shortcode: 'link'
-        0x1f511:  type: 'key',                shortcode: 'key'
-
-        0x1f6c4:  type: 'assign',             shortcode: 'baggage_claim'
 
         0x1f6a9:  type: 'position',           shortcode: 'triangular_flag_on_post'
         0x1f697:  type: 'move',               shortcode: 'car'
-
         0x2b55:   type: 'angle',              shortcode: 'o'
         0x1f503:  type: 'rotate',             shortcode: 'arrows_clockwise'
         0x1f504:  type: 'rotate',             shortcode: 'arrows_anticlockwise'
-
-        0x270b:   type: 'touchPosition',      shortcode: 'hand'
-        0x1f44b:  type: 'touchDelta',         shortcode: 'wave'
-
-        0x1f446:  type: 'touchStart',         shortcode: 'point_up_2'
-        0x261d:   type: 'touchEnd',           shortcode: 'point_up'
 
         0x2753:   type: 'if',                 shortcode: 'question'
         0x1f500:  type: 'not',                shortcode: 'twisted_rightwards_arrows'
         0x23e9:   type: 'blockStart',         shortcode: 'fast_forward'
         0x23ea:   type: 'blockEnd',           shortcode: 'rewind'
 
+        0x270b:   type: 'touchPosition',      shortcode: 'hand'
+        0x1f44b:  type: 'touchDelta',         shortcode: 'wave'
+        0x1f446:  type: 'touchStart',         shortcode: 'point_up_2'
+        0x261d:   type: 'touchEnd',           shortcode: 'point_up'
+
+        0x1f3b2:  type: 'random',             shortcode: 'random'
+
       emoji = emojis[val] or { type: 'unknown' }
-      console.log val
-      console.log emoji.type
+      console.log "Unknown emoji: 0x#{val.toString(16)}" if emoji.type == 'unknown'
       tokenStack.push emoji
       return
 
@@ -105,10 +102,11 @@ module.exports = (name, content, callback) ->
   consumeStatement = ->
     token = tokenStack.splice(0, 1)[0]
 
+    console.log "[stat] #{token.type}"
+
     switch token.type
       when 'awake', 'update'
         activeCodeBlock = token.type
-        console.log activeCodeBlock
 
       when 'position'
         codeBlocks[activeCodeBlock] += "gdev.api.actor.SetPosition(#{consumeExpression()}, #{consumeExpression()}, #{consumeExpression()});"
@@ -133,7 +131,7 @@ module.exports = (name, content, callback) ->
 
       else
         # TODO: callback with an error
-        console.log "Unexpected token type: #{JSON.stringify token, null, 2}"
+        console.log "Not a statement: #{JSON.stringify token, null, 2}"
 
     codeBlocks[activeCodeBlock] += '\n'
     return
@@ -144,9 +142,19 @@ module.exports = (name, content, callback) ->
     code = null
     token = tokenStack.splice(0, 1)[0]
 
+    console.log "[expr] #{token.type}"
+
     switch token.type
       when 'number'
         code = token.value.toString()
+      when '-'
+        code = "-#{consumeExpression()}"
+      when 'self'
+        code = 'self'
+      when 'id'
+        code = "gdev.vars.#{token.value}"
+      when 'scissors'
+        return 'null'
       when 'not'
         code = "!(#{consumeExpression()})"
       when 'position'
@@ -161,13 +169,12 @@ module.exports = (name, content, callback) ->
         code = "gdev.api.input.HasTouchStarted()"
       when 'touchEnd'
         code = "gdev.api.input.HasTouchEnded()"
-      when 'self'
-        code = 'self'
-      when 'id'
-        code = "gdev.vars.#{token.value}"
+      when 'random'
+        code = "gdev.api.math.Random(#{consumeExpression()},#{consumeExpression()})"
       else
-        # Not an expression? Put the token back in its place and return
+        # Not an expression? Backtrack
         tokenStack.unshift token
+        console.log "[back]"
         return null
 
     followUp = consumeExpressionFollowUp()
@@ -178,6 +185,8 @@ module.exports = (name, content, callback) ->
 
     code = null
     token = tokenStack.splice(0, 1)[0]
+
+    console.log "[fllw] #{token.type}"
 
     switch token.type
       when '+', '-', '*', '/', '%', '<', '>', '<=', '>=', '==', '!='
@@ -190,8 +199,9 @@ module.exports = (name, content, callback) ->
       when 'key'
         code = ".keys[#{consumeIndex()}]"
       else
-        # Not an expression follow-up? Put the token back in its place and return
+        # Not an expression follow-up? Backtrack
         tokenStack.unshift token
+        console.log "[back]"
         return null
 
     followUp = consumeExpressionFollowUp()
@@ -228,8 +238,11 @@ module.exports = (name, content, callback) ->
         makeToken()
         tokenStack.push { type: 'statementEnd' } if char == '\n'
       else
+        # Check for operator that should be tokenized
+        if acc in [ '≤', '<=', '≥', '>=', '=', '≠', '<', '>', '+', '-', '*', '/', '%' ]
+          makeToken()
         # Check for alphanumeric boundary
-        if acc.length > 0 and ((idRegex.test(acc[acc.length-1]) and !idRegex.test(char)) or (!idRegex.test(acc[acc.length-1]) and idRegex.test(char)))
+        else if acc.length > 0 and ((idRegex.test(acc[acc.length-1]) and !idRegex.test(char)) or (!idRegex.test(acc[acc.length-1]) and idRegex.test(char)))
           makeToken()
         acc += char
 
