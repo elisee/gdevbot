@@ -1,0 +1,74 @@
+extends layout
+
+block title
+  | Games
+
+block content
+  header.
+    Check out those games made with @gdevbot.
+
+  h2 Games
+
+  style.
+    .Game {
+      display: inline-block;
+      line-height: 0;
+      margin: 0.5em 0.5em 0 0;
+      width: 320px;
+      height: 200px;
+      position: relative;
+      cursor: pointer;
+      background: #444;
+    }
+
+    .Game img {
+      width: 320px;
+      height: 200px;
+    }
+
+    .Game > a {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 320px;
+      height: 200px;
+    }
+
+    .Game > a:hover {
+      background: url(images/play.svg) no-repeat center center;
+    }
+
+    .Game .Info {
+      position: absolute;
+      height: 2em;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      line-height: 1;
+      padding: 0.5em;
+      background: rgba(0,0,0,0.6);
+      z-index: 1;
+      color: #ccc;
+    }
+
+    .Game .Info .Name {
+      color: #eee;
+      font-weight: bold;
+    }
+
+    .Game .Info .Author {
+      color: #eee;
+    }
+
+  for game in games
+    .Game
+      img(src="projects/#{game.id}/cover.png")
+      a(href="/p/#{game.id}")
+      .Info
+        span.Name= game.id
+        - var author = game.metadata.members.list[0]
+        |  by 
+        a.Author(href="http://twitter.com/account/redirect_by_id/#{author.id}")= author.cachedUsername
+
+  if games.length == 0
+    p No games have been published yet. <a href="/commands#publish">Publish yours</a>

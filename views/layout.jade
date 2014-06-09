@@ -3,7 +3,7 @@ html
   head
     title 
       block title
-        | @gdevbot
+      |  &mdash; @#{botUsername}
     meta(name="viewport",content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, user-scalable=0")
     link(href='http://fonts.googleapis.com/css?family=Roboto:400,700',rel='stylesheet',type='text/css')
     style.
@@ -17,69 +17,79 @@ html
         font-family: 'Roboto';
         font-size: 18px;
 
-        width: 800px;
+        width: 1120px;
+        padding-right: 160px;
         margin: 2em auto;
+        overflow-x: hidden;
 
         background: #eee;
         color: #444;
 
         overflow-y: scroll;
+
+        display: flex;
       }
 
       a {
-        color: blue;
+        color: #37f;
       }
 
       a:hover {
         text-decoration: none;
       }
 
-      h1 {
-        display: flex;
-        line-height: 1;
-        height: 64px;
+      nav {
+        text-align: right;
+        width: 160px;
       }
 
-      h1 img {
+      nav img {
         vertical-align: middle;
-        width: 64px;
-        height: 64px;
+        margin-top: 1em;
         margin-right: 0.5em;
         background: #ccc;
         border-radius: 0.25em;
       }
 
-      h1 a { display: none; }
-
-      nav {
-        float: right;
-      }
-
-      nav a {
-        display: inline-block;
+      nav ul a {
+        display: block;
         text-transform: uppercase;
-        margin: 0 0.25em;
-        padding: 0.5em 1em;
+        padding: 0.125em 0.5em;
         text-decoration: none;
-        background: #ddd;
-        border-radius: 0.5em;
         color: #666;
         font-weight: bold;
       }
 
-      nav a:last-of-type {
-        margin-right: 0;
+      nav li {
+        list-style: none;
       }
 
-      nav a:hover {
+      nav ul a.Active {
+        text-decoration: underline;
+      }
+
+      nav ul a:hover {
         background: #dadada;
         color: #444;
       }
 
-      nav a:active {
+      nav ul a:active {
         background: #ccc;
         color: #fff;
       }
+
+      footer {
+        margin-top: 1em;
+        color: #888;
+        font-size: smaller;
+        margin-right: 0.5em;
+      }
+
+      footer a {
+        color: #666;
+      }
+
+      #Page { flex: 1; margin: 0 0.5em; }
 
       h2, p { margin-top: 1em; }
       pre { margin-top: 0.5em; padding: 0.5em; background: #e0e0e0; border-radius: 0.5em; position: relative; }
@@ -127,18 +137,27 @@ html
 
   body
     nav
-      a(href="/") Home
-      a(href="/commands") Commands
-      a(href="/emoji") Emoji code
+      .Container
+        ul
+          for entry in menu
+            - var entryClass = (entry.path == path) ? 'Active' : ''
+            li
+              a(href=entry.path,class=entryClass)= entry.title
 
-    h1
-      img(src="https://pbs.twimg.com/profile_images/474536274435391488/nf4WB0wW.png")
-      div
-        div
-          block title
-        <a href="https://twitter.com/gdevbot" class="twitter-follow-button" data-show-count="false" data-lang="en">Follow @gdevbot</a>
-        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        img(src="https://pbs.twimg.com/profile_images/474536274435391488/nf4WB0wW.png")
 
-    block content
+        footer
+          p.
+            Crafted by <a href="http://twitter.com/elisee">Elisée</a><br>
+            from <a href="http://sparklinlabs.com/">Sparklin Labs</a>.
+
+          p(style="height: 18px;")
+            <a href="https://twitter.com/elisee" class="twitter-follow-button" data-show-count="false" data-lang="en">Follow @elisee</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+          p Check out<br><a href="https://bitbucket.org/sparklinlabs/gdevbot">the source</a>.
+
+    #Page
+      block content
 
     script(src="/js/tweetCommand.js")

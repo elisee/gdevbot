@@ -26,6 +26,17 @@ parseCommand = (text, tweet, callback) ->
     when 'create'
       return callback new Error "Invalid arguments" if tokens.length != 1
 
+    when 'cover'
+      return callback new Error "Invalid arguments" if tokens.length != 2
+
+      command.url = tokens[1]
+
+    when 'publish'
+      return callback new Error "Invalid arguments" if tokens.length != 1
+
+    when 'unpublish'
+      return callback new Error "Invalid arguments" if tokens.length != 1
+
     when 'allow'
       return callback new Error "Invalid arguments" if ! tweet.entities?.user_mentions? or tweet.entities.user_mentions.length < 2
 
@@ -105,13 +116,22 @@ executeCommand = (command, projectId, user, callback) ->
 
   role = switch command.type
     # These commands require admin privileges
-    when 'allow', 'deny', 'destroy' then 'admin'
+    when 'allow', 'deny', 'cover', 'publish', 'unpublish', 'destroy' then 'admin'
     else 'member'
 
   backend.getProject projectId, user, role, (err, project) ->
     return callback err if err?
 
     switch command.type
+      when 'cover'
+        backend.setCover project, commands.url, callback
+
+      when 'publish'
+        backend.publish project, callback
+
+      when 'unpublish'
+        backend.unpublish project, callback
+
       when 'allow'
         backend.addMembers project, command.members, callback
 
@@ -278,10 +298,19 @@ emojisByShortcode =
 require 'string.fromcodepoint'
 app.locals.imgEmoji = (shortcode) ->
   emoji = emojisByShortcode[shortcode]
-
   """<img src="images/emoji/#{emoji.utf8.toString(16)}.png", alt="#{String.fromCodePoint(emoji.utf8)}", title="#{emoji.desc}" data-shortcode="#{shortcode}">"""
 
+app.locals.menu = [
+  { path: '/', title: 'Home' },
+  { path: '/games', title: 'Games' },
+  { path: '/commands', title: 'Commands' },
+  { path: '/emoji', title: 'Emoji code' },
+]
+
+app.use (req, res, next) -> res.locals.path = req.path; next()
+
 app.get '/', (req, res) -> res.render 'index'
+app.get '/games', (req, res) -> res.render 'games', { games: backend.publishedGames }
 app.get '/commands', (req, res) -> res.render 'commands'
 app.get '/emoji', (req, res) -> res.render 'emoji'
 

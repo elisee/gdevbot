@@ -13,7 +13,7 @@ nameRegex = /^[A-Za-z0-9_]{1,40}$/
 makeProject = (projectId) ->
   projectsById[projectId.toLowerCase()] = project =
     id: projectId
-    metadata: { members: { list: [], byId: {} } }
+    metadata: { published: false, members: { list: [], byId: {} } }
     assetsByName: []
     actorsTree: { roots: [], byName: {}, parentsByChildName: {} }
 
@@ -45,11 +45,13 @@ writeActors = (project, callback) ->
 projectsPath = path.join __dirname, '..', 'public', 'projects'
 try mkdirp.sync projectsPath
 projectsById = {}
+publishedGames = []
 
 for projectEntry in fs.readdirSync path.join projectsPath
   project = makeProject projectEntry
 
   # Metadata
+  metadataJSON = null
   try metadataJSON = fs.readFileSync path.join projectsPath, projectEntry, 'metadata.json'
   if metadataJSON?
     metadata = JSON.parse metadataJSON
@@ -57,6 +59,9 @@ for projectEntry in fs.readdirSync path.join projectsPath
     project.metadata.members.list = metadata.members
     for member in project.metadata.members.list
       project.metadata.members.byId[ member.id ] = member
+
+    project.metadata.published = metadata.published
+    publishedGames.push project if project.metadata.published
   
   if project.metadata.members.list.length == 0
     # We need at least one member for each project
@@ -96,6 +101,8 @@ for projectEntry in fs.readdirSync path.join projectsPath
 
 
 module.exports = backend =
+
+  publishedGames: publishedGames
 
   createProject: (projectId, user, callback) ->
     return process.nextTick ( -> callback new Error "Invalid project name" ) if ! nameRegex.test projectId
@@ -153,6 +160,37 @@ module.exports = backend =
 
     callback null, project
     return
+
+  setCover: (project, url, callback) ->
+    # TODO: Abort request if size is too big
+    request { url, encoding: null }, (err, response, body) ->
+      return callback new Error 'Failed to download cover' if err? or response.statusCode != 200
+
+      gm(body).resize(1280,800,'>').write path.join(projectsPath, project.id.toLowerCase(), "cover.png"), (err) ->
+        if err?
+          utils.botlog "[#{project.id}] Error importing cover from #{url}:"
+          utils.botlog JSON.stringify err, null, 2
+          return callback new Error 'Failed to process cover'
+
+        callback null
+
+      return
+
+  publish: (project, callback) ->
+    fs.exists path.join(projectsPath, project.id.toLowerCase(), "cover.png"), (exists) ->
+      return callback new Error 'A cover is required to publish' if ! exists
+      return callback new Error 'Project is already published' if project.metadata.published
+
+      project.metadata.published = true
+      publishedGames.push project
+      writeMetadata project, callback
+
+  unpublish: (project, callback) ->
+    return callback new Error 'Project is not published' if  project.metadata.published
+
+    project.metadata.published = false
+    publishedGames.splice publishedGames.indexOf(project), 1
+    writeMetadata project, callback
 
   addMembers: (project, members, callback) ->
     for member in members

@@ -1,9 +1,13 @@
 extends layout
 
-block content
-  p Hi, I'm <a href="http://twitter.com/gdevbot">@gdevbot</a>. You can make me build games for you by tweeting at me. Crazy cool, right?
+block title
+  | Home
 
-  h2 I... huh, what? why?
+block content
+  header.
+    Hi! I'm <a href="http://twitter.com/#{botUsername}">@#{botUsername}</a>.<br> You can make me build games for you by tweeting at me.
+
+  h2 wat. Why?
 
   p Let's get started making a game, shall we?
 
@@ -15,16 +19,5 @@ block content
       a.Tweet Tweet this command
 
   p.
-    Your followers won't see your tweets unless they follow @#{botUsername} too,<br>
-    so don't worry about cluttering their timeline.
-
-  p.
-    Don't mention anyone else or add more hashtags, or your tweet will be ignored by the bot.
-
-  h2 Who made this?
-
-  p My name's <a href="http://twitter.com/elisee">Elisée</a>. I <a href="http://sparklinlabs.com/">make games</a>.
-
-  h2 How was it built?
-
-  p You can check out the source <a href="https://bitbucket.org/sparklinlabs/gdevbot">on Bitbucket</a>.
+    Your followers won't see your tweets unless they follow @#{botUsername} too.<br>
+    Don't add other mentions or hashtags or your tweet will be ignored.
