@@ -124,7 +124,7 @@ executeCommand = (command, projectId, user, callback) ->
 
     switch command.type
       when 'cover'
-        backend.setCover project, commands.url, callback
+        backend.setCover project, command.url, callback
 
       when 'publish'
         backend.publish project, callback
