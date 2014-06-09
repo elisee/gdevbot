@@ -191,7 +191,7 @@ module.exports = backend =
         return callback new Error "Name already used by an asset of type \"#{existingAsset.type}\""
 
       # TODO: Implement support for other asset types
-      gm(body).resize(1024,1024,'>').write path.join(projectsPath, project.id.toLowerCase(), 'assets', "#{name}.png"), (err) ->
+      gm(body).resize(2048,2048,'>').write path.join(projectsPath, project.id.toLowerCase(), 'assets', "#{name}.png"), (err) ->
         if err?
           utils.botlog "[#{project.id}] Error processing import of #{url}:"
           utils.botlog JSON.stringify err, null, 2
