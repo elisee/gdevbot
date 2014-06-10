@@ -61,6 +61,7 @@ document.getElementById('TweetScriptButton').addEventListener 'click', (event) -
   commandTweet = makeScriptTweet textareaElt.value
   commandTweet = commandTweet.replace ///<mark>///g, '['
   commandTweet = commandTweet.replace ///</mark>///g, ']'
+  commandTweet = commandTweet.replace ///<br>///g, '\n'
   event.target.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(commandTweet)
 
 document.getElementById('ExampleSelect').addEventListener 'change', (event) ->
