@@ -162,8 +162,6 @@ module.exports = (name, content, callback) ->
         code = "!(#{consumeExpression()})"
       when 'blockStart'
         code = "(#{consumeExpression()}"
-      when 'blockEnd'
-        code = ")"
 
       when 'position'
         code = "gdev.api.actor.GetPosition(#{consumeExpression()})"
@@ -213,6 +211,10 @@ module.exports = (name, content, callback) ->
 
       when 'key'
         code = ".keys[#{consumeIndex()}]"
+
+      when 'blockEnd'
+        code = ")"
+        
       else
         # Not an expression follow-up? Backtrack
         tokenStack.unshift token
