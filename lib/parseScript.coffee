@@ -161,9 +161,9 @@ module.exports = (name, content, callback) ->
       when 'not'
         code = "!(#{consumeExpression()})"
       when 'blockStart'
-        codeBlocks[activeCodeBlock] += "(#{consumeExpression()}"
+        code = "(#{consumeExpression()}"
       when 'blockEnd'
-        codeBlocks[activeCodeBlock] += ")"
+        code = ")"
 
       when 'position'
         code = "gdev.api.actor.GetPosition(#{consumeExpression()})"
