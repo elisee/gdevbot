@@ -20,7 +20,7 @@ makeProject = (projectId) ->
   project
 
 writeMetadata = (project, callback) ->
-  metadata = { members: project.metadata.members.list }
+  metadata = { published: project.metadata.published, members: project.metadata.members.list }
 
   fs.writeFile path.join(projectsPath, project.id.toLowerCase(), 'metadata.json'), JSON.stringify(metadata, null, 2), (err) ->
     if err?
