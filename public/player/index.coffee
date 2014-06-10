@@ -102,7 +102,19 @@ walkActorRender = (actor) ->
   walkActorRender childActor for childActor in actor.children
 
   ctx.restore()
-  # ctx.fillRect actor.transform.x - 5, actor.transform.y - 5, 10, 10
+  return
+
+walkActorDebug = (actor) ->
+  ctx.save()
+  ctx.translate actor.transform.x, actor.transform.y
+  ctx.rotate actor.transform.angle*Math.PI/180
+
+  ctx.fillRect -5, -5, 10, 10
+  ctx.fillText actor.name, 10, -10
+
+  walkActorDebug childActor for childActor in actor.children
+
+  ctx.restore()
   return
 
 updateInterval = 1 / 60 * 1000
@@ -134,8 +146,12 @@ tick = (timestamp) ->
   ctx.fillRect 0, 0, ctx.canvas.width, ctx.canvas.height
   ctx.translate ctx.canvas.width / 2, ctx.canvas.height / 2
 
-  ctx.fillStyle = '#f00'
   walkActorRender actor for actor in gdev.actorsTree.roots
+
+  if gdev.debug
+    ctx.fillStyle = '#f00'
+    ctx.font = 'bold 10pt Arial'
+    walkActorDebug actor for actor in gdev.actorsTree.roots
 
   return
 
