@@ -320,15 +320,25 @@ module.exports = backend =
     writeActors project, callback
 
   addComponent: (project, actorName, assetName, callback) ->
-    return process.nextTick ( -> callback new Error "Invalid asset name" ) if ! nameRegex.test assetName
     return process.nextTick ( -> callback new Error "Invalid actor name" ) if ! nameRegex.test actorName
+    return process.nextTick ( -> callback new Error "Invalid asset name" ) if ! nameRegex.test assetName
 
     actor = project.actorsTree.byName[actorName.toLowerCase()]
     return process.nextTick ( -> callback new Error "No such actor" ) if ! actor?
 
+    asset = project.assetsByName[assetName.toLowerCase()]
+    return process.nextTick ( -> callback new Error "No such asset" ) if ! asset?
+
+    componentsOfType = 0
+
     for component in actor.components
       if component.name.toLowerCase() == assetName.toLowerCase()
         return process.nextTick ( -> callback new Error "Component already exists" )
+      if project.assetsByName[component.name.toLowerCase()]?.type == asset.type
+        componentsOfType++
+
+    if asset.type == 'image' and componentsOfType > 0
+      return process.nextTick ( -> callback new Error "This actor already has an image" )
 
     actor.components.push name: assetName
     writeActors project, callback
