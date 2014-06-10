@@ -25,6 +25,9 @@ setupActorAPI = ->
     Rotate: (self, dAngle) ->
       self.transform.angle += dAngle
       return
+
+    GetSpriteWidth: (self) -> self.sprite.image.width
+    GetSpriteHeight: (self) -> self.sprite.image.height
   }
 
 setupInputAPI = (ctx) ->

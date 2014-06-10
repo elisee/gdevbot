@@ -137,6 +137,10 @@ block content
           != imgEmoji(":arrows_clockwise:")
 
         div
+          != imgEmoji(":arrow_left_right:")
+          != imgEmoji(":arrow_up_down:")
+
+        div
           != imgEmoji(":question:")
           != imgEmoji(":twisted_rightwards_arrows:")
           != imgEmoji(":fast_forward:")
@@ -236,6 +240,25 @@ block content
         != imgEmoji(":penguin:")
       |  
       mark 5
+
+  section#sprite
+    .Icon
+      != imgEmoji(":arrow_left_right:")
+      |  
+      != imgEmoji(":arrow_up_down:")
+    h2 Sprite width &amp; height
+    
+    p.
+      You can get the sprite width and height for your computations.<br>
+      For instance, this moves the actor by half its sprite's width:
+
+    pre
+      != imgEmoji(":car:")
+      != imgEmoji(":penguin:")
+      != imgEmoji(":arrow_left_right:")
+      != imgEmoji(":penguin:")
+      != imgEmoji(":scissors:")
+      | / 2 0
 
   section#properties
     .Icon

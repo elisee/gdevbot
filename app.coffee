@@ -283,6 +283,9 @@ emojisByShortcode =
   ":o:":                              utf8: 0x2b55,       desc: "Angle"
   ":arrows_clockwise:":               utf8: 0x1f503,      desc: "Rotate"
 
+  ":arrow_left_right:":               utf8: 0x2194,       desc: "Sprite width"
+  ":arrow_up_down:":                  utf8: 0x2195,       desc: "Sprite height"
+
   ":question:":                       utf8: 0x2753,       desc: "Condition"
   ":twisted_rightwards_arrows:":      utf8: 0x1f500,      desc: "'Not' operator"
   ":fast_forward:":                   utf8: 0x23e9,       desc: "Block start"

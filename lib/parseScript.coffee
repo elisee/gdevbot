@@ -66,6 +66,9 @@ module.exports = (name, content, callback) ->
         0x1f503:  type: 'rotate',             shortcode: 'arrows_clockwise'
         0x1f504:  type: 'rotate',             shortcode: 'arrows_anticlockwise'
 
+        0x2194:   type: 'spriteWidth',        shortcode: 'arrow_left_right'
+        0x2195:   type: 'spriteHeight',       shortcode: 'arrow_up_down'
+
         0x2753:   type: 'if',                 shortcode: 'question'
         0x1f500:  type: 'not',                shortcode: 'twisted_rightwards_arrows'
         0x23e9:   type: 'blockStart',         shortcode: 'fast_forward'
@@ -157,10 +160,17 @@ module.exports = (name, content, callback) ->
         return 'null'
       when 'not'
         code = "!(#{consumeExpression()})"
+
       when 'position'
         code = "gdev.api.actor.GetPosition(#{consumeExpression()})"
       when 'angle'
         code = "gdev.api.actor.GetAngle(#{consumeExpression()})"
+
+      when 'spriteWidth'
+        code = "gdev.api.actor.GetSpriteWidth(#{consumeExpression()})"
+      when 'spriteHeight'
+        code = "gdev.api.actor.GetSpriteHeight(#{consumeExpression()})"
+
       when 'touchPosition'
         code = "gdev.api.input.GetTouchPosition()"
       when 'touchDelta'
@@ -169,6 +179,7 @@ module.exports = (name, content, callback) ->
         code = "gdev.api.input.HasTouchStarted()"
       when 'touchEnd'
         code = "gdev.api.input.HasTouchEnded()"
+
       when 'random'
         code = "gdev.api.math.Random(#{consumeExpression()},#{consumeExpression()})"
       else
