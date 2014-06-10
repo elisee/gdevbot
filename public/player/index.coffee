@@ -27,6 +27,7 @@ loadAssets = (callback) ->
     
     [ assetName, ext ] = asset.split('.')
     if ext == 'js'
+      gdev.behaviors[assetName.toLowerCase()] = {}
       script = document.createElement 'script'
       script.onload = -> onAssetLoaded assetName
       script.src = "#{projectPath}/assets/#{asset}"

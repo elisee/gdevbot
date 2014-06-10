@@ -256,7 +256,7 @@ module.exports = (name, content, callback) ->
   codeBlocks.awake = "behavior_#{name}.Awake = function(self) {\n#{codeBlocks.awake}\n}"
   codeBlocks.update = "behavior_#{name}.Update = function(self) {\n#{codeBlocks.update}\n}"
 
-  script = "var behavior_#{name} = gdev.behaviors.#{name} = {};" 
+  script = "var behavior_#{name} = gdev.behaviors.#{name};" 
   script = [ '(function(){', script, codeBlocks.init, codeBlocks.awake, codeBlocks.update, '})();' ].join '\n'
 
   callback null, script
