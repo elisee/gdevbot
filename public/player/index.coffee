@@ -50,7 +50,7 @@ setupActors = (callback) ->
       children: []
       transform: { x: 0, y: 0, angle: 0 }
       behaviors: []
-      sprites: []
+      sprite: null
       keys: {}
 
     for componentDef in actorDef.components
@@ -58,8 +58,7 @@ setupActors = (callback) ->
       if behavior?
         actor.behaviors.push behavior
       else
-        # FIXME: renderers rather than sprites?
-        actor.sprites.push
+        actor.sprite = 
           image: gdev.assetsByName[componentDef.name.toLowerCase()]
 
     for childActorDef in actorDef.children
@@ -97,8 +96,8 @@ walkActorRender = (actor) ->
   ctx.translate actor.transform.x, actor.transform.y
   ctx.rotate actor.transform.angle*Math.PI/180
 
-  for sprite in actor.sprites
-    ctx.drawImage sprite.image, -sprite.image.width / 2, -sprite.image.height / 2
+  if actor.sprite?
+    ctx.drawImage actor.sprite.image, -actor.sprite.image.width / 2, -actor.sprite.image.height / 2
 
   walkActorRender childActor for childActor in actor.children
 
