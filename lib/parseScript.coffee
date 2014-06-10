@@ -161,7 +161,7 @@ module.exports = (name, content, callback) ->
       when 'not'
         code = "!(#{consumeExpression()})"
       when 'blockStart'
-        codeBlocks[activeCodeBlock] += "("
+        codeBlocks[activeCodeBlock] += "(#{consumeExpression()}"
       when 'blockEnd'
         codeBlocks[activeCodeBlock] += ")"
 
