@@ -1,13 +1,13 @@
 module.exports =
-  internalPort: 
-  publicPort: 
-  domain: 
+  internalPort: 3000
+  publicPort: 3000
+  domain: 'gdevbot.dev'
 
   twitter:
-    consumerKey: 
-    consumerSecret: 
-    accessToken : 
-    accessTokenSecret: 
-    userId: 
-    username: 
-    enableReplies: 
+    consumerKey: ''
+    consumerSecret: ''
+    accessToken : ''
+    accessTokenSecret: ''
+    userId: ''
+    username: ''
+    enableReplies: false
