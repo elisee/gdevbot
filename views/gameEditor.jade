@@ -30,13 +30,13 @@ html
         width: 400px;
         background: #eee;
         color: #444;
-        padding: 0 1em;
         overflow-y: scroll;
       }
 
       aside h1 {
         text-transform: uppercase;
         margin-top: 0.5em;
+        padding: 0 1em;
         color: #888;
       }
 
@@ -50,6 +50,7 @@ html
 
       aside ul {
         list-style: none;
+        padding: 0 1em;
       }
 
       aside li {
@@ -69,11 +70,30 @@ html
       aside .Failed .Response { background: rgba(255,0,0,0.25) }
       aside .Successful .Response { background: rgba(0,255,0,0.15) }
 
+      nav {
+        display: flex;
+        background: #e0e0e0;
+        justify-content: center;
+        width: 100%;
+      }
+
+      nav a {
+        display: block;
+        text-align: center;
+        padding: 0.5em;
+        text-transform: uppercase;
+      }
+
     script!=javascript
 
   body
     iframe(src="/p/#{projectId}")
     aside
+      nav
+        a(href="/",target="_blank") Home
+        a(href="/commands",target="_blank") Commands
+        a(href="/emoji",target="_blank") Emoji script
+
       h1 #{projectId} log
 
       ul.Log
