@@ -284,13 +284,27 @@ block content
     p.
       See below for an explanation about the scissors and why they're required.
 
+  section#scissors
+    .Icon
+      != imgEmoji(":scissors:")
+    h2 End of expression
+
+    p.
+      Since emoji code doesn't use parentheses to delimit expressions,
+      you will sometime need to use the scissors to explicitly mark the end of an expression.
+
+    p.
+      If we didn't use the scissors in the Key example above, the code would be interpreted by
+      the engine to mean "position of the property x of the actor", instead of "property x
+      of the position of the actor".
+
   section#assignment
     .Icon
       != imgEmoji(":baggage_claim:")
     h2 Assignment
     
     p.
-      You can assign values to properties:
+      You can assign values to properties. A value can be any expression and you can use common arithmetic operators.
 
     pre
       != imgEmoji(":baggage_claim:")
@@ -303,8 +317,16 @@ block content
       mark 5
 
     p.
-      A value can be any expression and you can use common arithmetic operators.
+      You can also use the key on its own to assign (and read) global variables:
 
+    pre
+      != imgEmoji(":baggage_claim:")
+      != imgEmoji(":key:")
+      |  
+      mark myGlobal
+      |  
+      mark 1
+ 
   section#conditions
     .Icon
       != imgEmoji(":question:")
@@ -339,20 +361,6 @@ block content
 
     p.
       Group statements that should be affected by a condition. Or just because it's pretty.
-
-  section#scissors
-    .Icon
-      != imgEmoji(":scissors:")
-    h2 End of expression
-
-    p.
-      Since emoji code doesn't use parentheses to delimit expressions,
-      you will sometime need to use the scissors to explicitly mark the end of an expression.
-
-    p.
-      If we didn't use the scissors in the Key example above, the code would be interpreted by
-      the engine to mean "position of the property x of the penguin", instead of "property x
-      of the position of the penguin".
 
   section#input
     .Icon
