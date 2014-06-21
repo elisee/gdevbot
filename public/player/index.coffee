@@ -1,9 +1,9 @@
-projectPath = "/projects/#{app.projectId.toLowerCase()}"
+projectPath = "/projects/#{app.project.id.toLowerCase()}"
 
 loadAssets = (callback) ->
   loaderElement = document.getElementById 'Loader'
   progressElement = loaderElement.querySelector 'progress'
-  progressElement.max = app.assets.length
+  progressElement.max = app.project.assets.length
 
   assetsToLoad = []
   onAssetLoaded = (name, asset) ->
@@ -22,7 +22,7 @@ loadAssets = (callback) ->
   gdev.behaviors = {}
   gdev.assetsByName = {}
 
-  app.assets.forEach (asset) ->
+  app.project.assets.forEach (asset) ->
     assetsToLoad.push asset
     
     [ assetName, ext ] = asset.split('.')
@@ -69,7 +69,7 @@ setupActors = (callback) ->
     gdev.actorsTree.byName[actor.name.toLowerCase()] = actor
     actor
 
-  for actorDef in app.actors
+  for actorDef in app.project.actors
     gdev.actorsTree.roots.push walkActorDef actorDef
 
   walkActorAwake = (actor) ->
@@ -125,8 +125,8 @@ tick = (timestamp) ->
   gdev.api.input.tick()
 
   requestAnimationFrame tick
-  ctx.canvas.width = window.innerWidth
-  ctx.canvas.height = window.innerHeight
+  ctx.canvas.width = ctx.canvas.parentElement.clientWidth
+  ctx.canvas.height = ctx.canvas.parentElement.clientHeight
 
   # Logic
   timestamp = timestamp || 0

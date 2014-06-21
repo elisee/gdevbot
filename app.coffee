@@ -1,6 +1,12 @@
 config = require './config'
 utils = require './lib/utils'
+emoji = require './lib/emoji'
 backend = require './lib/backend'
+
+###require('./lib/parseScript') 'test', '➰🚩🐧🎲✂✂👋🔑y*-5', (err, content) ->
+  console.log err
+  console.log content
+return###
 
 Entities = require('html-entities').AllHtmlEntities
 entities = new Entities()
@@ -124,40 +130,62 @@ executeCommand = (command, projectId, user, callback) ->
 
     switch command.type
       when 'cover'
-        backend.setCover project, command.url, callback
+        backend.setCover project, command.url, (err) ->
+          return callback err if err?
+          callback null, "Cover updated"
 
       when 'publish'
-        backend.publish project, callback
+        backend.publish project, (err) ->
+          return callback err if err?
+          callback null, "Published on the store"
 
       when 'unpublish'
-        backend.unpublish project, callback
+        backend.unpublish project, (err) ->
+          return callback err if err?
+          callback null, "Unpublished from the store"
 
       when 'allow'
-        backend.addMembers project, command.members, callback
+        backend.addMembers project, command.members, (err) ->
+          return callback err if err?
+          callback null, "New member(s) added"
 
       when 'deny'
-        backend.removeMembers project, command.memberIds, callback
+        backend.removeMembers project, command.memberIds, (err) ->
+          return callback err if err?
+          callback null, "Member(s) removed"
 
       when 'import'
-        backend.importAsset project, command.name, command.url, callback
+        backend.importAsset project, command.name, command.url, (err) ->
+          return callback err if err?
+          callback null, "Asset imported"
 
       when 'script'
-        backend.addScript project, command.name, command.content, callback
+        backend.addScript project, command.name, command.content, (err) ->
+          return callback err if err?
+          callback null, "Script added or updated"
 
       when 'new actor'
-        backend.createActor project, command.name, command.parentName, callback
+        backend.createActor project, command.name, command.parentName, (err) ->
+          return callback err if err?
+          callback null, "New actor created"
 
       when 'add'
-        backend.addComponent project, command.actorName, command.assetName, callback
+        backend.addComponent project, command.actorName, command.assetName, (err) ->
+          return callback err if err?
+          callback null, "Asset added to actor"
 
       when 'remove'
-        backend.removeComponent project, command.actorName, command.assetName, callback
+        backend.removeComponent project, command.actorName, command.assetName, (err) ->
+          return callback err if err?
+          callback null, "Asset removed from actor"
 
       when 'reparent'
-        backend.reparentActor project, command.name, command.parentName, callback
+        backend.reparentActor project, command.name, command.parentName, (err) ->
+          return callback err if err?
+          callback null, "Actor reparented"
 
       else
-        callback new error 'No such command'
+        callback new Error "No such command"
 
     return
 
@@ -179,8 +207,8 @@ tweetCommandFailed = (username, reason, replyTweetId, callback) ->
     err.tweet = { type: 'failure', reason, replyTweetId } if err?
     callback err
 
-tweetCommandSuccess = (username, projectId, replyTweetId, callback) ->
-  msg = "@#{username} OK #{baseURL}/p/#{projectId}?#{replyTweetId.slice(-5)}"
+tweetReply = (username, text, replyTweetId, callback) ->
+  msg = "@#{username} #{text}"
 
   if ! config.twitter.enableReplies
     utils.botlog "Would have tweeted: #{msg}"
@@ -236,15 +264,24 @@ dataCallback = (err, data, chunk, response) ->
   replyTweetId = data.id_str
 
   parseCommand commandText, data, (err, command) ->
-    return tweetCommandFailed data.user.screen_name, err.message, replyTweetId, logTweetFail if err?
+    return backend.logTweet projectId, data, false, err.message if err?
 
     # If no command has been generated, just return
     return if ! command?
 
-    executeCommand command, projectId, data.user, (err) ->
-      return tweetCommandFailed data.user.screen_name, err.message, replyTweetId, logTweetFail if err?
-      tweetCommandSuccess data.user.screen_name, projectId, replyTweetId, logTweetFail
+    executeCommand command, projectId, data.user, (err, message) ->
+      success = ! err?
+      response = if ! success then err.message else message
 
+      backend.logTweet projectId, data, success, response
+      return tweetCommandFailed data.user.screen_name, err.message, replyTweetId, logTweetFail if err?
+
+      if command.type == 'create'
+        tweetReply data.user.screen_name, "Here's your new project! #{emoji.char(':thumbsup:')} #{baseURL}/p/#{projectId}/edit", replyTweetId, logTweetFail
+      else if command.type == 'publish'
+        tweetReply data.user.screen_name, "Here's your game link! #{emoji.char(':heart:')} #{baseURL}/p/#{projectId}", replyTweetId, logTweetFail
+
+      return
     return
 
 endCallback = ->
@@ -268,46 +305,13 @@ app.use express.static __dirname + '/public'
 app.use require('connect-slashes') false
 
 app.locals.botUsername = config.twitter.username
-
-emojisByShortcode =
-  ":sunrise:":                        utf8: 0x1f305,      desc: "Once"
-  ":curly_loop:":                     utf8: 0x27b0,       desc: "Always"
-
-  ":penguin:":                        utf8: 0x1f427,      desc: "Self"
-  ":baggage_claim:":                  utf8: 0x1f6c4,      desc: "Set value"
-  ":key:":                            utf8: 0x1f511,      desc: "Property"
-  ":scissors:":                       utf8: 0x2702,       desc: "End expression"
-
-  ":triangular_flag_on_post:":        utf8: 0x1f6a9,      desc: "Position"
-  ":car:":                            utf8: 0x1f697,      desc: "Move"
-  ":o:":                              utf8: 0x2b55,       desc: "Angle"
-  ":arrows_clockwise:":               utf8: 0x1f503,      desc: "Rotate"
-
-  ":arrow_left_right:":               utf8: 0x2194,       desc: "Sprite width"
-  ":arrow_up_down:":                  utf8: 0x2195,       desc: "Sprite height"
-
-  ":question:":                       utf8: 0x2753,       desc: "Condition"
-  ":twisted_rightwards_arrows:":      utf8: 0x1f500,      desc: "'Not' operator"
-  ":fast_forward:":                   utf8: 0x23e9,       desc: "Block start"
-  ":rewind:":                         utf8: 0x23ea,       desc: "Block end"
-
-  ":hand:":                           utf8: 0x270b,       desc: "Touch position"
-  ":wave:":                           utf8: 0x1f44b,      desc: "Touch movement"
-  ":point_up_2:":                     utf8: 0x1f446,      desc: "Touch started"
-  ":point_up:":                       utf8: 0x261d,       desc: "Touch ended"
-
-  ":random:":                         utf8: 0x1f3b2,      desc: "Random"
-
-require 'string.fromcodepoint'
-app.locals.imgEmoji = (shortcode) ->
-  emoji = emojisByShortcode[shortcode]
-  """<img src="images/emoji/#{emoji.utf8.toString(16)}.png", alt="#{String.fromCodePoint(emoji.utf8)}", title="#{emoji.desc}" data-shortcode="#{shortcode}">"""
+app.locals.imgEmoji = emoji.img
 
 app.locals.menu = [
   { path: '/', title: 'Home' },
   { path: '/games', title: 'Games' },
   { path: '/commands', title: 'Commands' },
-  { path: '/emoji', title: 'Emoji code' },
+  { path: '/emoji', title: 'Emoji code' }
 ]
 
 app.use (req, res, next) -> res.locals.path = req.path; next()
@@ -317,24 +321,41 @@ app.get '/games', (req, res) -> res.render 'games', { games: backend.publishedGa
 app.get '/commands', (req, res) -> res.render 'commands'
 app.get '/emoji', (req, res) -> res.render 'emoji'
 
-app.get '/p/:projectId', (req, res) ->
-  fs.readdir path.join(__dirname, 'public', 'projects', req.params.projectId.toLowerCase(), 'assets'), (err, assets) ->
-    return res.render 'gameNotFound', projectId: req.params.projectId if err?
+getProject = (projectId, callback) ->
+  fs.readdir path.join(__dirname, 'public', 'projects', projectId.toLowerCase(), 'assets'), (err, assets) ->
+    return callback err if err?
 
-    fs.readFile path.join(__dirname, 'public', 'projects', req.params.projectId.toLowerCase(), 'actors.json'), encoding: 'utf8', (err, actorsJSON) ->
-      return console.log err.stack if err?
+    fs.readFile path.join(__dirname, 'public', 'projects', projectId.toLowerCase(), 'actors.json'), encoding: 'utf8', (err, actorsJSON) ->
+      return callback err if err?
 
       actors = JSON.parse actorsJSON
 
-      if assets.length == 0 or actors.length == 0 or (actors[0].children.length == 0 and actors[0].components.length == 0)
-        return res.render 'newGame', projectId: req.params.projectId, assets: assets, actors: actors
-
-      project =
-        projectId: req.params.projectId
+      callback null,
+        id: projectId
         assets: assets
         actors: actors
 
-      res.expose project
-      res.render 'game', projectId: req.params.projectId
+app.get '/p/:projectId', (req, res) ->
+  getProject req.params.projectId, (err, project) ->
+    return res.render 'gameNotFound', projectId: project.id if err?
+
+    res.expose { project }
+    res.render 'game', projectId: project.id
+
+app.get '/p/:projectId/edit', (req, res) ->
+  getProject req.params.projectId, (err, project) ->
+    return res.render 'gameNotFound', projectId: project.id if err?
+
+    if project.assets.length == 0 or project.actors.length == 0 or (project.actors[0].children.length == 0 and project.actors[0].components.length == 0)
+      res.expose { project }
+      res.render 'newGame', projectId: project.id, assets: project.assets, actors: project.actors, showSidebar: true
+    else
+      res.expose { project }
+      res.render 'game', projectId: project.id, showSidebar: true
+
+app.get '/p/:projectId/log.json', (req, res) ->
+  backend.getProjectLog req.params.projectId, 20, (err, log) ->
+    return res.send 500 if err?
+    res.json log
 
 app.listen config.internalPort

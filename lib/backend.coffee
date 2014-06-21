@@ -7,6 +7,13 @@ path = require 'path'
 request = require 'request'
 gm = require 'gm'
 fs = require 'fs'
+sqlite3 = require 'sqlite3'
+
+db = new sqlite3.Database path.join __dirname, '..', 'projectLogs.sq3db'
+db.run 'CREATE TABLE IF NOT EXISTS projectLogs (id INTEGER PRIMARY KEY, projectId TEXT, tweetId TEXT, tweetText TEXT, tweetHTML TEXT, success BOOLEAN, response TEXT)', (err) ->
+  if err?
+    console.log 'Error while creating projectLogs table:'
+    console.log err
 
 nameRegex = /^[A-Za-z0-9_]{1,40}$/
 
@@ -103,6 +110,27 @@ for projectEntry in fs.readdirSync path.join projectsPath
 module.exports = backend =
 
   publishedGames: publishedGames
+
+  logTweet: (projectId, tweet, success, response) ->
+    request { url: "https://api.twitter.com/1/statuses/oembed.json?id=#{tweet.id_str}&hide_media=true&hide_thread=true&omit_script=true" }, (err, reqResponse, body) ->
+      if err?
+        console.log "Failed to fetch tweet #{tweet.id_str}:"
+        console.log err
+        tweetHTML = '<blockquote class="twitter-tweet"><p>Failed to fetch Tweet</p><a href="https://twitter.com/statuses/' + tweet.id_str + '">Link</a></blockquote>'
+      else
+        tweetHTML = JSON.parse(body).html
+
+      db.run 'INSERT INTO projectLogs (projectId, tweetId, tweetText, tweetHTML, success, response) VALUES(?,?,?,?,?,?)', [ projectId.toLowerCase(), tweet.id_str, tweet.text, tweetHTML, success, response ], (err) ->
+        if err?
+          console.log "Error while inserting tweet #{tweet.id_str} into project log:"
+          console.log err
+
+        return
+      return
+    return
+
+  getProjectLog: (projectId, maxTweets, callback) ->
+    db.all 'SELECT * FROM projectLogs WHERE projectId=? ORDER BY id DESC LIMIT ?', [ projectId.toLowerCase(), maxTweets ], callback
 
   createProject: (projectId, user, callback) ->
     return process.nextTick ( -> callback new Error "Invalid project name" ) if ! nameRegex.test projectId

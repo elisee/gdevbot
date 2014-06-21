@@ -5,3 +5,4 @@ config.coffee
 public/projects/*
 public/player/*.js
 public/js/*.js
+projectLogs.sq3db
