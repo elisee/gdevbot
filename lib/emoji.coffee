@@ -1,6 +1,6 @@
 require 'string.fromcodepoint'
 
-emoji = module.exports =
+module.exports =
 
   byShortcode:
     ":sunrise:":                        utf8: 0x1f305,      desc: "Once"
@@ -35,9 +35,9 @@ emoji = module.exports =
     ":warning:":                        utf8: 0x26a0,       desc: "Warning"
 
   img: (shortcode) ->
-    emoji = emoji.byShortcode[shortcode]
+    emoji = module.exports.byShortcode[shortcode]
     """<img src="/images/emoji/#{emoji.utf8.toString(16)}.png", alt="#{String.fromCodePoint(emoji.utf8)}", title="#{emoji.desc}" data-shortcode="#{shortcode}">"""
 
   char: (shortcode) ->
-    emoji = emoji.byShortcode[shortcode]
+    emoji = module.exports.byShortcode[shortcode]
     String.fromCodePoint(emoji.utf8)
