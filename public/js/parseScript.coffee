@@ -24,11 +24,12 @@ fixedCharCodeAt = (str, idx) ->
 
 idRegex = /^[A-Za-z0-9_]$/
 
-module.exports = (name, content, callback) ->
+parseScript = (name, content, callback) ->
   name = name.toLowerCase()
 
   # Remove line-feeds
   content = content.replace /\r/g, ''
+  content = content.replace /\n/g, ' '
   
   codeBlocks = 
     init: ''
@@ -274,6 +275,13 @@ module.exports = (name, content, callback) ->
   codeBlocks.update = "behavior_#{name}.Update = function(self) {\n#{codeBlocks.update}\n}"
 
   script = "var behavior_#{name} = gdev.behaviors.#{name};" 
-  script = [ '(function(){', script, codeBlocks.init, codeBlocks.awake, codeBlocks.update, '})();' ].join '\n'
+  script = [ '(function(){', script, codeBlocks.init, codeBlocks.awake, '\n', codeBlocks.update, '})();' ].join '\n'
+
+  script = script.replace /\n\n\n/g, '\n\n'
 
   callback null, script
+
+if module?.exports?
+  module.exports = parseScript
+else
+  window.parseScript = parseScript

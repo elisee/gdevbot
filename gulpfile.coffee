@@ -7,6 +7,11 @@ gulp.task 'copyPlayerDependencies', ->
     .src [ './node_modules/underscore/underscore-min.js' ]
     .pipe gulp.dest './public/player/'
 
+gulp.task 'copyPlaygroundDependencies', ->
+  gulp
+    .src [ './node_modules/js-beautify/js/lib/beautify.js' ]
+    .pipe gulp.dest './public/js/'
+
 gulp.task 'coffee', ->
   gulp
     .src './public/**/*.coffee'
@@ -14,7 +19,7 @@ gulp.task 'coffee', ->
     .on 'error', gutil.log
     .pipe gulp.dest './public'
 
-tasks = [ 'copyPlayerDependencies', 'coffee' ]
+tasks = [ 'copyPlayerDependencies', 'copyPlaygroundDependencies', 'coffee' ]
 
 gulp.task 'watch', tasks, ->
   gulp.watch './public/**/*.coffee', [ 'coffee' ]

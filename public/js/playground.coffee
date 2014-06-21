@@ -1,6 +1,7 @@
 buttonsElt = document.querySelector('.PlaygroundFlex .Buttons')
 textareaElt = document.querySelector('.Playground textarea')
-previewElt = document.querySelector('.ScriptPreview')
+tweetPreviewElt = document.querySelector('.TweetPreview')
+generatedScriptPreviewElt = document.querySelector('.GeneratedScriptPreview')
 
 emojiHTMLbyShortcodes = {}
 for group in buttonsElt.children
@@ -37,22 +38,33 @@ onClickEmojiButton = (event) ->
   updateScriptPreview()
   textareaElt.focus()
 
-makeScriptTweet = (src, html) ->
+makeScript = (src, html, br) ->
   code = src
   code = code.trim().replace /\s{2,}/g, ' '
   code = code.replace /: :/g, '::'
-  code = code.replace /\n/g, '<br>'
+  code = code.replace /\n/g, '<br>' if br
 
   for group in buttonsElt.children
     for buttonElt in group.children
       code = code.replace new RegExp(buttonElt.dataset.shortcode, 'g'), if html then emojiHTMLbyShortcodes[buttonElt.dataset.shortcode] else buttonElt.getAttribute 'alt'
 
+  code
+
+makeScriptTweet = (src, html=false) ->
+  code = makeScript src, html, true
+
   if html
     "@gdevbot #<mark>Project</mark> script <mark>name</mark> #{code}"
   else
     "@gdevbot #[Project] script [name] #{code}"
+  
+updateScriptPreview = ->
+  tweetPreviewElt.innerHTML = makeScriptTweet textareaElt.value, true
 
-updateScriptPreview = -> previewElt.innerHTML = makeScriptTweet textareaElt.value, true
+  parseScript 'name', makeScript(textareaElt.value, false, false), (err, script) ->
+    # Remove IIFE
+    script = script.substring '(function(){\nvar behavior_name = gdev.behaviors.name;'.length, script.length - '})();'.length
+    generatedScriptPreviewElt.innerHTML = js_beautify script, indent_size: 2
 
 buttonsElt.addEventListener 'click', onClickEmojiButton
 textareaElt.addEventListener 'keyup', updateScriptPreview

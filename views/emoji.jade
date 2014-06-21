@@ -19,7 +19,7 @@ block content
     }
 
     pre img { width: 36px; height: 36px; vertical-align: bottom; }
-    .ScriptPreview img { width: 28px; height: 24px; padding: 0 2px; vertical-align: bottom; }
+    .TweetPreview img { width: 28px; height: 24px; padding: 0 2px; vertical-align: bottom; }
 
     section { clear: both; }
 
@@ -57,12 +57,20 @@ block content
       outline: none;
     }
 
-    .ScriptPreview {
+    .TweetPreview, .GeneratedScriptPreview {
       min-height: 120px;
       padding: 0.5em;
       border: 1px solid #ccc;
       background: #f5f5f5;
       margin-bottom: 0.25em;
+    }
+
+    .GeneratedScriptPreview {
+      border-radius: 0;
+      margin-top: 0;
+      font-size: 75%;
+      max-height: 500px;
+      overflow-x: scroll;
     }
 
     .EditorToolbar {
@@ -108,7 +116,8 @@ block content
     .PlaygroundFlex
       .EditorContainer
         textarea(placeholder="Type in here & insert emojis by clicking on the right")
-        .ScriptPreview
+        pre.GeneratedScriptPreview
+        .TweetPreview
         .EditorToolbar
           a(href="#")#TweetScriptButton Tweet this script
           |  
@@ -154,6 +163,8 @@ block content
 
         div
           != imgEmoji(":random:")
+    script(src="js/beautify.js")
+    script(src="js/parseScript.js")
     script(src="js/playground.js")
 
   section#events

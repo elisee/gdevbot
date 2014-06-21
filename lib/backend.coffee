@@ -1,5 +1,5 @@
 utils = require './utils'
-parseScript = require './parseScript'
+parseScript = require '../public/js/parseScript'
 
 async = require 'async'
 mkdirp = require 'mkdirp'

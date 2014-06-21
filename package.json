@@ -19,7 +19,8 @@
     "string.fromcodepoint": "^0.2.0",
     "underscore": "^1.6.0",
     "sqlite3": "^2.2.3",
-    "socket.io": "^1.0.6"
+    "socket.io": "^1.0.6",
+    "js-beautify": "^1.5.1"
   },
   "devDependencies": {
     "gutil": "^1.1.0",
