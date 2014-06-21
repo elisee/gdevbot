@@ -117,7 +117,9 @@ parseCommand = (text, tweet, callback) ->
 executeCommand = (command, projectId, user, callback) ->
 
   if command.type == 'create'
-    backend.createProject projectId, user, callback
+    backend.createProject projectId, user, (err) ->
+      return callback err if err?
+      callback null, "Project created"
     return
 
   role = switch command.type
