@@ -3,11 +3,6 @@ utils = require './lib/utils'
 emoji = require './lib/emoji'
 backend = require './lib/backend'
 
-###require('./lib/parseScript') 'test', '➰🚩🐧🎲✂✂👋🔑y*-5', (err, content) ->
-  console.log err
-  console.log content
-return###
-
 Entities = require('html-entities').AllHtmlEntities
 entities = new Entities()
 
