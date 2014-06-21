@@ -198,17 +198,6 @@ logTweetFail = (err) ->
   return if ! err?
   utils.botlog "Could not tweet:\n#{JSON.stringify(err, null, 2)}"
 
-tweetCommandFailed = (username, reason, replyTweetId, callback) ->
-  msg = "@#{username} ERR #{reason}\n#{replyTweetId.slice(-5)}"
-
-  if ! config.twitter.enableReplies
-    utils.botlog "Would have tweeted: #{msg}"
-    return callback null
-
-  twitter.statuses 'update', { status: msg, in_reply_to_status_id: replyTweetId }, config.twitter.accessToken, config.twitter.accessTokenSecret, (err) ->
-    err.tweet = { type: 'failure', reason, replyTweetId } if err?
-    callback err
-
 tweetReply = (username, text, replyTweetId, callback) ->
   msg = "@#{username} #{text}"
 
@@ -266,7 +255,7 @@ dataCallback = (err, data, chunk, response) ->
   replyTweetId = data.id_str
 
   parseCommand commandText, data, (err, command) ->
-    return backend.logTweet projectId, data, false, err.message if err?
+    return logTweet projectId, data, false, err.message if err?
 
     # If no command has been generated, just return
     return if ! command?
@@ -275,8 +264,7 @@ dataCallback = (err, data, chunk, response) ->
       success = ! err?
       response = if ! success then err.message else message
 
-      backend.logTweet projectId, data, success, response
-      return tweetCommandFailed data.user.screen_name, err.message, replyTweetId, logTweetFail if err?
+      logTweet projectId, data, success, response
 
       if command.type == 'create'
         tweetReply data.user.screen_name, "Here's your new project! #{emoji.char(':thumbsup:')} #{baseURL}/p/#{projectId}/edit", replyTweetId, logTweetFail
@@ -293,6 +281,11 @@ endCallback = ->
 twitter.getStream 'userstream', {}, config.twitter.accessToken, config.twitter.accessTokenSecret, dataCallback, endCallback
 utils.botlog "Started."
 
+logTweet = (projectId, tweet, success, response) ->
+  backend.logTweet projectId, tweet, success, response, (err, logEntry) ->
+    return if err?
+    io.to(projectId.toLowerCase()).emit 'projectLogEntry', logEntry
+
 # Web server
 express = require 'express'
 require 'express-expose'
@@ -300,6 +293,17 @@ fs = require 'fs'
 path = require 'path'
 
 app = express()
+server = require('http').Server app
+io = require('socket.io')(server)
+
+io.on 'connection', (socket) ->
+  socket.on 'subscribeProjectLog', (projectId) ->
+    backend.getProjectLog projectId, 100, (err, log) ->
+      return socket.disconnect() if err?
+      socket.emit 'projectLog', log
+      socket.join projectId.toLowerCase()
+
+
 app.set 'view engine', 'jade'
 
 app.use '/images/emoji', express.static __dirname + '/public/images/emoji', { maxAge: 1000 * 3600 * 24 }
@@ -356,8 +360,8 @@ app.get '/p/:projectId/edit', (req, res) ->
       res.render 'game', projectId: project.id, showSidebar: true
 
 app.get '/p/:projectId/log.json', (req, res) ->
-  backend.getProjectLog req.params.projectId, 20, (err, log) ->
+  backend.getProjectLog req.params.projectId, 100, (err, log) ->
     return res.send 500 if err?
     res.json log
 
-app.listen config.internalPort
+server.listen config.internalPort

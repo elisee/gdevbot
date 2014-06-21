@@ -111,7 +111,7 @@ module.exports = backend =
 
   publishedGames: publishedGames
 
-  logTweet: (projectId, tweet, success, response) ->
+  logTweet: (projectId, tweet, success, response, callback) ->
     request { url: "https://api.twitter.com/1/statuses/oembed.json?id=#{tweet.id_str}&hide_media=true&hide_thread=true&omit_script=true" }, (err, reqResponse, body) ->
       if err?
         console.log "Failed to fetch tweet #{tweet.id_str}:"
@@ -120,14 +120,21 @@ module.exports = backend =
       else
         tweetHTML = JSON.parse(body).html
 
-      db.run 'INSERT INTO projectLogs (projectId, tweetId, tweetText, tweetHTML, success, response) VALUES(?,?,?,?,?,?)', [ projectId.toLowerCase(), tweet.id_str, tweet.text, tweetHTML, success, response ], (err) ->
+      logEntry =
+        projectId: projectId.toLowerCase()
+        tweetId: tweet.id_str
+        tweetText: tweet.text
+        tweetHTML: tweetHTML
+        success: success
+        response: response
+
+      db.run 'INSERT INTO projectLogs (projectId, tweetId, tweetText, tweetHTML, success, response) VALUES(?,?,?,?,?,?)', [ logEntry.projectId, logEntry.tweetId, logEntry.tweetText, logEntry.tweetHTML, logEntry.success, logEntry.response ], (err) ->
         if err?
           console.log "Error while inserting tweet #{tweet.id_str} into project log:"
           console.log err
+          return callback err
 
-        return
-      return
-    return
+        return callback null, logEntry
 
   getProjectLog: (projectId, maxTweets, callback) ->
     db.all 'SELECT * FROM projectLogs WHERE projectId=? ORDER BY id DESC LIMIT ?', [ projectId.toLowerCase(), maxTweets ], callback
@@ -141,7 +148,7 @@ module.exports = backend =
         return callback new Error 'Project name is already used'  if err.code == 'EEXIST'
         utils.botlog "[#{projectId}] Unexpected error creating project folder:"
         utils.botlog JSON.stringify err, null, 2
-        return callback new Error 'Unexpected error'
+        return callback new Error "Unexpected error"
 
       project = makeProject projectId
 

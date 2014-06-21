@@ -2,18 +2,19 @@ sidebarElement = document.getElementsByTagName('aside')[0]
 
 logElement = sidebarElement.querySelector('.Log')
 
-xhr = new XMLHttpRequest
-xhr.open 'GET', "/p/#{app.project.id}/log.json"
-xhr.responseType = 'json'
+formatLogEntry = (entry) ->
+  statusClass = if entry.success then 'Successful' else 'Failed'
+  statusEmoji = if entry.success then '1f44d' else '26a0'
+  """<li class="#{statusClass}">#{entry.tweetHTML}<div class="Response"><img src="/images/emoji/#{statusEmoji}.png" alt="#{statusClass}:" class="Emoji"> #{entry.response}</div></li>"""
 
-xhr.onload = (e) ->
-  if @status == 200
-    for logEntry in @response
-      statusClass = if logEntry.success then 'Successful' else 'Failed'
-      statusEmoji = if logEntry.success then '1f44d' else '26a0'
-      logElement.insertAdjacentHTML 'beforeend', """<li class="#{statusClass}">#{logEntry.tweetHTML}<div class="Response"><img src="/images/emoji/#{statusEmoji}.png" alt="#{statusClass}:" class="Emoji"> #{logEntry.response}</div></li>"""
-    twttr.widgets.load()
+socket = io()
 
-  return
+socket.on 'projectLog', (log) ->
+  logElement.insertAdjacentHTML 'beforeend', formatLogEntry entry for entry in log
+  twttr.widgets.load()
 
-xhr.send()
+socket.on 'projectLogEntry', (entry) ->
+  logElement.insertAdjacentHTML 'afterbegin', formatLogEntry entry
+  twttr.widgets.load()
+
+socket.emit 'subscribeProjectLog', app.project.id
