@@ -277,6 +277,8 @@ twitter.getStream 'userstream', {}, config.twitter.accessToken, config.twitter.a
 utils.botlog "Started."
 
 logTweet = (projectId, tweet, success, response) ->
+  return if ! fs.existsSync path.join __dirname, 'public', 'projects', projectId.toLowerCase()
+
   backend.logTweet projectId, tweet, success, response, (err, logEntry) ->
     return if err?
     io.to(projectId.toLowerCase()).emit 'projectLogEntry', logEntry
