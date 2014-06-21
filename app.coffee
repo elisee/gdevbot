@@ -338,14 +338,14 @@ getProject = (projectId, callback) ->
 
 app.get '/p/:projectId', (req, res) ->
   getProject req.params.projectId, (err, project) ->
-    return res.render 'gameNotFound', projectId: project.id if err?
+    return res.render 'gameNotFound', projectId: req.params.projectId if err?
 
     res.expose { project }
     res.render 'game', projectId: project.id
 
 app.get '/p/:projectId/edit', (req, res) ->
   getProject req.params.projectId, (err, project) ->
-    return res.render 'gameNotFound', projectId: project.id if err?
+    return res.render 'gameNotFound', projectId: req.params.projectId if err?
 
     if project.assets.length == 0 or project.actors.length == 0 or (project.actors[0].children.length == 0 and project.actors[0].components.length == 0)
       res.expose { project }
