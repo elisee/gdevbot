@@ -342,19 +342,18 @@ app.get '/p/:projectId', (req, res) ->
   getProject req.params.projectId, (err, project) ->
     return res.render 'gameNotFound', projectId: req.params.projectId if err?
 
-    res.expose { project }
-    res.render 'game', projectId: project.id
+    if project.assets.length == 0 or project.actors.length == 0 or (project.actors[0].children.length == 0 and project.actors[0].components.length == 0)
+      res.expose { project }
+      res.render 'newGame', projectId: project.id, assets: project.assets, actors: project.actors
+    else
+      res.expose { project }
+      res.render 'game', projectId: project.id
 
 app.get '/p/:projectId/edit', (req, res) ->
   getProject req.params.projectId, (err, project) ->
     return res.render 'gameNotFound', projectId: req.params.projectId if err?
-
-    if project.assets.length == 0 or project.actors.length == 0 or (project.actors[0].children.length == 0 and project.actors[0].components.length == 0)
-      res.expose { project }
-      res.render 'newGame', projectId: project.id, assets: project.assets, actors: project.actors, showSidebar: true
-    else
-      res.expose { project }
-      res.render 'game', projectId: project.id, showSidebar: true
+    res.expose projectId: project.id
+    res.render 'gameEditor', projectId: project.id
 
 app.get '/p/:projectId/log.json', (req, res) ->
   backend.getProjectLog req.params.projectId, 100, (err, log) ->

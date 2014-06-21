@@ -11,7 +11,7 @@ block content
         @#{botUsername} ##{projectId} import <mark>name</mark> from <mark>url</mark>
 
       p
-        a(href="https://twitter.com/intent/tweet?text=" + encodeURIComponent('@#{botUsername} ##{projectId} import [name] from [url]')) Tweet this command
+        a(href="https://twitter.com/intent/tweet?text=" + encodeURIComponent('@#{botUsername} ##{projectId} import [name] from [url]'),target="_blank") Tweet this command
 
     else if actors.length == 0
       p Your image was imported! You can now create an actor.
@@ -20,7 +20,7 @@ block content
         @#{botUsername} ##{projectId} new actor <mark>name</mark>
 
       p
-        a(href="https://twitter.com/intent/tweet?text=" + encodeURIComponent('@#{botUsername} ##{projectId} new actor [name]')) Tweet this command
+        a(href="https://twitter.com/intent/tweet?text=" + encodeURIComponent('@#{botUsername} ##{projectId} new actor [name]'),target="_blank") Tweet this command
 
     else if actors.length == 1 && actors[0].children.length == 0 && actors[0].components.length == 0
       p Well done! Now add the image to your actor:
@@ -30,10 +30,11 @@ block content
         @#{botUsername} ##{projectId} add <mark>#{assetName}</mark> to <mark>#{actors[0].name}</mark>
 
       p
-        a(href="https://twitter.com/intent/tweet?text=" + encodeURIComponent('@#{botUsername} ##{projectId} add #{assetName} to #{actors[0].name}')) Tweet this command
+        a(href="https://twitter.com/intent/tweet?text=" + encodeURIComponent('@#{botUsername} ##{projectId} add #{assetName} to #{actors[0].name}'),target="_blank") Tweet this command
 
       p.
         Once you're done, check out<br>
         <a href="/emoji">the Emoji code documentation</a><br>
         to make your game come to life.
 
+    script(src="//platform.twitter.com/widgets.js",charset="utf-8")

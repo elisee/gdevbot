@@ -1,0 +1,81 @@
+doctype html
+html
+  head
+    title #{projectId} - gdevbot
+    link(href='http://fonts.googleapis.com/css?family=Roboto:400,700',rel='stylesheet',type='text/css')
+    style.
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html, body { height: 100%; }
+
+      body {
+        background: #000;
+        display: flex;
+        flex-direction: row;
+      }
+
+      iframe {
+        flex: 1;
+        position: relative;
+      }
+
+      aside {
+        font-family: 'Roboto';
+        font-size: 18px;
+        width: 400px;
+        background: #eee;
+        color: #444;
+        padding: 0 1em;
+        overflow-y: scroll;
+      }
+
+      aside h1 {
+        text-transform: uppercase;
+        margin-top: 0.5em;
+        color: #888;
+      }
+
+      aside a {
+        color: #37f;
+      }
+
+      aside a:hover {
+        text-decoration: none;
+      }
+
+      aside ul {
+        list-style: none;
+      }
+
+      aside li {
+        margin-bottom: 1em;
+      }
+
+      aside blockquote {
+        padding: 0.5em;
+        background: #fff;
+        margin: 0.5em 0;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      }
+
+      aside .Emoji { width: 24px; height: 24px; vertical-align: bottom; }
+      aside .Response { padding: 0.5em; border-radius: 0.5em; }
+      aside .Failed .Response { background: rgba(255,0,0,0.25) }
+      aside .Successful .Response { background: rgba(0,255,0,0.15) }
+
+    script!=javascript
+
+  body
+    iframe(src="/p/#{projectId}")
+    aside
+      h1 #{projectId} log
+
+      ul.Log
+      script(src="//platform.twitter.com/widgets.js",charset="utf-8")
+      script(src="/socket.io/socket.io.js")
+      script(src="/js/projectLog.js")
