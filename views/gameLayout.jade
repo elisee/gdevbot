@@ -62,7 +62,22 @@ html
         text-decoration: none;
       }
 
+      #ProjectLogLink {
+        position: absolute;
+        top: 0;
+        right: 0;
+        opacity: 0.5;
+        padding: 0.5em;
+      }
+
+      #ProjectLogLink img { width: 36px; height: 36px; }
+      #ProjectLogLink:hover { opacity: 0.8; }
+      #ProjectLogLink:active { opacity: 1.0; }
+
     script!=javascript
 
   body
     block content
+    // Those two games don't have a log because they were built a while ago
+    if projectId.toLowerCase() != 'flap' && projectId.toLowerCase() != 'djump'
+      a(href="/p/#{projectId}/edit",target="_blank")#ProjectLogLink!= imgEmoji(":newspaper:")

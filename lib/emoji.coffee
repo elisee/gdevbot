@@ -34,6 +34,7 @@ module.exports =
     ":thumbsup:":                       utf8: 0x1f44d,      desc: "All good"
     ":warning:":                        utf8: 0x26a0,       desc: "Warning"
     ":heart:":                          utf8: 0x2665,       desc: "<3"
+    ":newspaper:":                      utf8: 0x1f4f0,      desc: "Project log"
 
   img: (shortcode) ->
     emoji = module.exports.byShortcode[shortcode]

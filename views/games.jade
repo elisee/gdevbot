@@ -45,10 +45,17 @@ block content
       left: 0;
       right: 0;
       line-height: 1;
-      padding: 0.5em;
       background: rgba(0,0,0,0.6);
       z-index: 1;
       color: #ccc;
+
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .GameBy {
+      flex: 1;
+      padding: 0.5em;
     }
 
     .Game .Info .Name {
@@ -60,15 +67,28 @@ block content
       color: #eee;
     }
 
+    .Game .ProjectLog {
+      padding: 0.25em;
+      opacity: 0.5;
+    }
+
+    .Game .Info .ProjectLog img { width: 24px; height: 24px; }
+    .Game .ProjectLog:hover { opacity: 0.8; }
+    .Game .ProjectLog:active { opacity: 1.0; }
+
   for game in games
     .Game
       img(src="projects/#{game.id}/cover.png")
       a(href="/p/#{game.id}")
       .Info
-        span.Name= game.id
-        - var author = game.metadata.members.list[0]
-        |  by 
-        a.Author(href="http://twitter.com/account/redirect_by_id/#{author.id}")= author.cachedUsername
+        span.GameBy
+          span.Name= game.id
+          - var author = game.metadata.members.list[0]
+          |  by 
+          a.Author(href="http://twitter.com/account/redirect_by_id/#{author.id}")= author.cachedUsername
+        // Those two games don't have a log because they were built a while ago
+        if game.id.toLowerCase() != 'flap' && game.id.toLowerCase() != 'djump'
+          a.ProjectLog(href="/p/#{game.id}/edit")!=imgEmoji(':newspaper:')
 
   if games.length == 0
     p No games have been published yet. <a href="/commands#publish">Publish yours</a>.
