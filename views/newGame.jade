@@ -11,7 +11,7 @@ block content
         @#{botUsername} ##{projectId} import <mark>name</mark> from <mark>url</mark>
 
       p
-        a(href="https://twitter.com/intent/tweet?text=" + encodeURIComponent('@#{botUsername} ##{projectId} import [name] from [url]'),target="_blank") Tweet this command
+        a(href="https://twitter.com/intent/tweet?text=" + encodeURIComponent('@#{botUsername} ##{projectId} import _name_ from _url_'),target="_blank") Tweet this command
 
     else if actors.length == 0
       p Your image was imported! You can now create an actor.
@@ -20,7 +20,7 @@ block content
         @#{botUsername} ##{projectId} new actor <mark>name</mark>
 
       p
-        a(href="https://twitter.com/intent/tweet?text=" + encodeURIComponent('@#{botUsername} ##{projectId} new actor [name]'),target="_blank") Tweet this command
+        a(href="https://twitter.com/intent/tweet?text=" + encodeURIComponent('@#{botUsername} ##{projectId} new actor _name_'),target="_blank") Tweet this command
 
     else if actors.length == 1 && actors[0].children.length == 0 && actors[0].components.length == 0
       p Well done! Now add the image to your actor:

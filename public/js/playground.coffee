@@ -74,14 +74,6 @@ makeScript = (src, html, br) ->
       code = code.replace new RegExp(buttonElt.dataset.shortcode, 'g'), if html then emojiHTMLbyShortcodes[buttonElt.dataset.shortcode] else buttonElt.getAttribute 'alt'
 
   code
-
-makeScriptTweet = (src, html=false) ->
-  code = makeScript src, html, true
-
-  if html
-    "@gdevbot #<mark>Project</mark> script <mark>name</mark> #{code}"
-  else
-    "@gdevbot #Project script name #{code}"
   
 # Taken from http://www.456bereastreet.com/archive/201105/get_element_text_including_alt_text_for_images_with_javascript/
 getElementText = (el) ->
@@ -116,9 +108,10 @@ buttonsElt.addEventListener 'click', onClickEmojiButton
 scriptEditorElt.addEventListener 'keyup', updateScriptPreview
 
 document.getElementById('TweetScriptButton').addEventListener 'click', (event) ->
-  commandTweet = makeScriptTweet getElementText(scriptEditorElt)
-  commandTweet = commandTweet.replace ///<mark>///g, ''
-  commandTweet = commandTweet.replace ///</mark>///g, ''
+  code = makeScript getElementText(scriptEditorElt), false, true
+  commandTweet = "@gdevbot #Project script name\n#{code}"
+  commandTweet = commandTweet.replace ///<mark>///g, '_'
+  commandTweet = commandTweet.replace ///</mark>///g, '_'
   commandTweet = commandTweet.replace ///<br>///g, '\n'
   event.target.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(commandTweet)
 
