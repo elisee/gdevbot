@@ -262,9 +262,12 @@ dataCallback = (err, data, chunk, response) ->
       logTweet projectId, data, success, response
 
       if command.type == 'create'
-        tweetReply data.user.screen_name, "Here's your new project! #{emoji.char(':thumbsup:')} #{baseURL}/p/#{projectId}/edit", replyTweetId, logTweetFail
-      else if command.type == 'publish'
-        tweetReply data.user.screen_name, "Here's your game link! #{emoji.char(':heart:')} #{baseURL}/p/#{projectId}", replyTweetId, logTweetFail
+        if success
+          tweetReply data.user.screen_name, "Here's your new project! #{emoji.char(':thumbsup:')} #{baseURL}/p/#{projectId}/edit", replyTweetId, logTweetFail
+        else
+          tweetReply data.user.screen_name, "This project name's already taken. #{emoji.char(':warning:')} Try something else?", replyTweetId, logTweetFail
+      else if command.type == 'publish' and success
+          tweetReply data.user.screen_name, "Here's your game link! #{emoji.char(':heart:')} #{baseURL}/p/#{projectId}", replyTweetId, logTweetFail
 
       return
     return
