@@ -117,8 +117,8 @@ scriptEditorElt.addEventListener 'keyup', updateScriptPreview
 
 document.getElementById('TweetScriptButton').addEventListener 'click', (event) ->
   commandTweet = makeScriptTweet getElementText(scriptEditorElt)
-  commandTweet = commandTweet.replace ///<mark>///g, '['
-  commandTweet = commandTweet.replace ///</mark>///g, ']'
+  commandTweet = commandTweet.replace ///<mark>///g, ''
+  commandTweet = commandTweet.replace ///</mark>///g, ''
   commandTweet = commandTweet.replace ///<br>///g, '\n'
   event.target.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(commandTweet)
 
