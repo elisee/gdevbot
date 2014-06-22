@@ -98,7 +98,7 @@ parseScript = (name, content, callback) ->
       when '≥', '>=' then tokenStack.push { type: '>=' }
       when '=' then tokenStack.push { type: '==' }
       when '≠' then tokenStack.push { type: '!=' }
-      when '<', '>', '+', '-', '*', '/', '%'
+      when '<', '>', '+', '-', '*', '/', '%', '√'
         tokenStack.push { type: val }
       else
         tokenStack.push { type: 'id', value: val }
@@ -191,6 +191,8 @@ parseScript = (name, content, callback) ->
         code = "gdev.api.math.Random(#{consumeExpression()},#{consumeExpression()})"
       when 'absolute'
         code = "Math.abs(#{consumeExpression()})"
+      when '√'
+        code = "Math.sqrt(#{consumeExpression()})"
       when 'sine'
         code = "gdev.api.math.Sin(#{consumeExpression()})"
       when 'atan2'
@@ -255,7 +257,7 @@ parseScript = (name, content, callback) ->
     charCode = fixedCharCodeAt content, i
     if charCode == false
       # Ignore
-    else if charCode >= 128 and charCode not in [ 0x2260, 2264, 0x2265 ]
+    else if charCode >= 128 and charCode not in [ 0x2260, 2264, 0x2265, 0x221a ]
       ### ≠ ≤ ≥ ###
       makeToken()
       acc = charCode
@@ -268,7 +270,7 @@ parseScript = (name, content, callback) ->
         tokenStack.push { type: 'statementEnd' } if char == '\n'
       else
         # Check for operator that should be tokenized
-        if acc in [ '≤', '<=', '≥', '>=', '=', '≠', '<', '>', '+', '-', '*', '/', '%' ]
+        if acc in [ '≤', '<=', '≥', '>=', '=', '≠', '<', '>', '+', '-', '*', '/', '%', '√' ]
           makeToken()
         # Check for alphanumeric boundary
         else if acc.length > 0 and ((idRegex.test(acc[acc.length-1]) and !idRegex.test(char)) or (!idRegex.test(acc[acc.length-1]) and idRegex.test(char)))
