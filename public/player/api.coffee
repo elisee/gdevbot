@@ -151,7 +151,9 @@ setupMathAPI = -> {
         _.random min, max
       else
         Math.random()
-        
+    
+    Sin: (angle) -> Math.sin(angle * Math.PI / 180)
+    Atan2: (y, x) -> Math.atan2(y, x) * 180 / Math.PI
   }
 
 window.setupAPI = (ctx) ->

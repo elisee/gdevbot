@@ -188,7 +188,10 @@ block content
           != imgEmoji(":point_up:")
 
         div
-          != imgEmoji(":random:")
+          != imgEmoji(":game_die:")
+          != imgEmoji(":up:")
+          != imgEmoji(":wavy_dash:")
+          != imgEmoji(":rainbow:")
     script(src="js/beautify.js")
     script(src="js/parseScript.js")
     script(src="js/playground.js")
@@ -467,7 +470,7 @@ block content
 
   section#random
     .Icon
-      != imgEmoji(":random:")
+      != imgEmoji(":game_die:")
     h2 Random number generator
 
     p.
@@ -479,7 +482,7 @@ block content
       a random integer between those two numbers (boundaries included).
 
     pre
-      != imgEmoji(":random:")
+      != imgEmoji(":game_die:")
       mark 1
       |  
       mark 6
@@ -489,6 +492,36 @@ block content
       between 0 and 1.
 
     pre
-      != imgEmoji(":random:")
+      != imgEmoji(":game_die:")
       != imgEmoji(":scissors:")
       != imgEmoji(":scissors:")
+
+  section#absolute
+    .Icon
+      != imgEmoji(":up:")
+    h2 Absolute value
+
+    p.
+      Use this emoji to get the absolute value of a number. Great for computing distances.
+
+    pre
+      != imgEmoji(":up:")
+      != imgEmoji(":triangular_flag_on_post:")
+      != imgEmoji(":penguin:")
+      != imgEmoji(":scissors:")
+      != imgEmoji(":key:")
+      | x
+
+  section#trigonometry
+    .Icon
+      != imgEmoji(":wavy_dash:")
+      != imgEmoji(":rainbow:")
+    h2 Trigonometry
+
+    p.
+      The wavy dash stands for the sine function, while the rainbow is
+      for computing an angle from a Y and X values (the arctangent function).
+
+    p.
+      The values passed shold be in degrees, not radians. You can get a cosine simply by
+      adding 90° to the value passed to the sine function.

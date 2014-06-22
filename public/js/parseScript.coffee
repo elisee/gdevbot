@@ -81,7 +81,10 @@ parseScript = (name, content, callback) ->
         0x1f446:  type: 'touchStart',         shortcode: 'point_up_2'
         0x261d:   type: 'touchEnd',           shortcode: 'point_up'
 
-        0x1f3b2:  type: 'random',             shortcode: 'random'
+        0x1f3b2:  type: 'random',             shortcode: 'game_die'
+        0x1f199:  type: 'absolute',           shortcude: 'up'
+        0x3030:   type: 'sine',               shortcode: 'wavy_dash'
+        0x1f308:  type: 'atan2',              shortcode: 'rainbow'
 
       emoji = emojis[val] or { type: 'unknown' }
       console.log "Unknown emoji: 0x#{val.toString(16)}" if emoji.type == 'unknown'
@@ -186,6 +189,12 @@ parseScript = (name, content, callback) ->
 
       when 'random'
         code = "gdev.api.math.Random(#{consumeExpression()},#{consumeExpression()})"
+      when 'absolute'
+        code = "Math.abs(#{consumeExpression()})"
+      when 'sine'
+        code = "gdev.api.math.Sin(#{consumeExpression()})"
+      when 'atan2'
+        code = "gdev.api.math.Atan2(#{consumeExpression()},#{consumeExpression()})"
       else
         # Not an expression? Backtrack
         tokenStack.unshift token

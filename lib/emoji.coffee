@@ -29,7 +29,10 @@ module.exports =
     ":point_up_2:":                     utf8: 0x1f446,      desc: "Touch started"
     ":point_up:":                       utf8: 0x261d,       desc: "Touch ended"
 
-    ":random:":                         utf8: 0x1f3b2,      desc: "Random"
+    ":game_die:":                       utf8: 0x1f3b2,      desc: "Random"
+    ":up:":                             utf8: 0x1f199,      desc: "Absolute value"
+    ":wavy_dash:":                      utf8: 0x3030,       desc: "Sine"
+    ":rainbow:":                        utf8: 0x1f308,      desc: "Arctangent"
 
     ":thumbsup:":                       utf8: 0x1f44d,      desc: "All good"
     ":warning:":                        utf8: 0x26a0,       desc: "Warning"
