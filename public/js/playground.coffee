@@ -1,6 +1,5 @@
 buttonsElt = document.querySelector('.PlaygroundFlex .Buttons')
-textareaElt = document.querySelector('.Playground textarea')
-tweetPreviewElt = document.querySelector('.TweetPreview')
+scriptEditorElt = document.querySelector('.ScriptEditor')
 generatedScriptPreviewElt = document.querySelector('.GeneratedScriptPreview')
 
 emojiHTMLbyShortcodes = {}
@@ -22,21 +21,47 @@ onClickEmojiButton = (event) ->
   return if event.target.tagName != 'IMG'
   return if ! event.target.dataset.shortcode?
 
-  text = textareaElt.value
+  text = scriptEditorElt.value
   emojiText = event.target.dataset.shortcode
 
-  if textareaElt.selectionStart > 0 and text[textareaElt.selectionStart - 1] not in [ ' ', '\n' ]
-    emojiText = " #{emojiText}"
+  selection = window.getSelection()
+  
+  img = document.createElement('img')
+  img.src = event.target.src
+  img.alt = event.target.dataset.shortcode
 
-  if textareaElt.selectionStart < text.length and text.length > 0 and text[textareaElt.selectionStart] not in [ ' ', '\n' ]
-    emojiText = "#{emojiText} "
+  done = false
 
-  textareaElt.value = text.substring(0, textareaElt.selectionStart) + emojiText + text.substring textareaElt.selectionStart
+  if selection.rangeCount > 0
+    range = selection.getRangeAt(0)
 
-  newSelectionStart = textareaElt.selectionStart + emojiText.length
-  textareaElt.setSelectionRange newSelectionStart, newSelectionStart
+    isInside = range.startContainer == scriptEditorElt and range.endContainer == scriptEditorElt
+
+    if ! isInside
+      parent = range.commonAncestorContainer
+      while parent? and parent != scriptEditorElt
+        parent = parent.parentElement
+
+      isInside = parent == scriptEditorElt
+
+    if isInside
+      range.deleteContents()
+      range.insertNode img
+
+      selection.removeAllRanges()
+      selection.addRange range
+      done = true
+
+  if ! done
+    scriptEditorElt.appendChild img
+
+  range.setStartAfter img
+  selection.removeAllRanges()
+  selection.addRange range
+
   updateScriptPreview()
-  textareaElt.focus()
+  scriptEditorElt.focus()
+  return
 
 makeScript = (src, html, br) ->
   code = src
@@ -58,19 +83,40 @@ makeScriptTweet = (src, html=false) ->
   else
     "@gdevbot #[Project] script [name] #{code}"
   
-updateScriptPreview = ->
-  tweetPreviewElt.innerHTML = makeScriptTweet textareaElt.value, true
+# Taken from http://www.456bereastreet.com/archive/201105/get_element_text_including_alt_text_for_images_with_javascript/
+getElementText = (el) ->
+  text = ""
+  
+  # Text node (3) or CDATA node (4) - return its text
+  if (el.nodeType is 3) or (el.nodeType is 4)
+    text = el.nodeValue
+  
+  # If node is an element (1) and an img, input[type=image], or area element, return its alt text
+  else if (el.nodeType is 1) and ((el.tagName.toLowerCase() is "img") or (el.tagName.toLowerCase() is "area") or ((el.tagName.toLowerCase() is "input") and el.getAttribute("type") and (el.getAttribute("type").toLowerCase() is "image")))
+    text = el.getAttribute("alt") or ""
+  
+  # Traverse children unless this is a script or style element
+  else if (el.nodeType is 1) and not el.tagName.match(/^(script|style)$/i)
+    children = el.childNodes
+    i = 0
+    l = children.length
 
-  parseScript 'name', makeScript(textareaElt.value, false, false), (err, script) ->
+    while i < l
+      text += getElementText(children[i])
+      i++
+  text
+
+updateScriptPreview = ->
+  parseScript 'name', makeScript(getElementText(scriptEditorElt), false, false), (err, script) ->
     # Remove IIFE
     script = script.substring '(function(){\nvar behavior_name = gdev.behaviors.name;'.length, script.length - '})();'.length
     generatedScriptPreviewElt.innerHTML = js_beautify script, indent_size: 2
 
 buttonsElt.addEventListener 'click', onClickEmojiButton
-textareaElt.addEventListener 'keyup', updateScriptPreview
+scriptEditorElt.addEventListener 'keyup', updateScriptPreview
 
 document.getElementById('TweetScriptButton').addEventListener 'click', (event) ->
-  commandTweet = makeScriptTweet textareaElt.value
+  commandTweet = makeScriptTweet getElementText(scriptEditorElt)
   commandTweet = commandTweet.replace ///<mark>///g, '['
   commandTweet = commandTweet.replace ///</mark>///g, ']'
   commandTweet = commandTweet.replace ///<br>///g, '\n'
@@ -81,7 +127,7 @@ document.getElementById('ExampleSelect').addEventListener 'change', (event) ->
   exampleCode = examples[event.target.value]
   return if ! exampleCode?
 
-  textareaElt.value = exampleCode
+  scriptEditorElt.innerHTML = makeScript exampleCode, true, false
   updateScriptPreview()
 
 updateScriptPreview()
