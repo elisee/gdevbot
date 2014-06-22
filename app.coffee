@@ -227,7 +227,7 @@ dataCallback = (err, data, chunk, response) ->
   # Replace any Twitter photo link by the actual image URL
   if data.entities.media? and data.entities.media.length == 1 and data.entities.media[0].type == 'photo'
     photo = data.entities.media[0]
-    commandText = commandText.slice(0, photo.indices[0]) + photo.media_url + commandText.slice(photo.indices[1])
+    commandText = commandText.slice(0, photo.indices[0]) + "#{photo.media_url}:large" + commandText.slice(photo.indices[1])
 
   # Remove the bot mention
   botMention = data.entities.user_mentions[0]
