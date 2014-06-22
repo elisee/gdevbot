@@ -2,6 +2,9 @@ buttonsElt = document.querySelector('.PlaygroundFlex .Buttons')
 scriptEditorElt = document.querySelector('.ScriptEditor')
 generatedScriptPreviewElt = document.querySelector('.GeneratedScriptPreview')
 
+projectNameElt = document.querySelector('.ScriptEditorContainer .ProjectName')
+scriptNameElt = document.querySelector('.ScriptEditorContainer .ScriptName')
+
 emojiHTMLbyShortcodes = {}
 for group in buttonsElt.children
   for buttonElt in group.children
@@ -108,8 +111,20 @@ buttonsElt.addEventListener 'click', onClickEmojiButton
 scriptEditorElt.addEventListener 'keyup', updateScriptPreview
 
 document.getElementById('TweetScriptButton').addEventListener 'click', (event) ->
+  if projectNameElt.textContent == ''
+    projectNameElt.focus()
+    event.preventDefault()
+    event.stopPropagation()
+    return
+
+  if scriptNameElt.textContent == ''
+    scriptNameElt.focus()
+    event.preventDefault()
+    event.stopPropagation()
+    return
+
   code = makeScript getElementText(scriptEditorElt), false, true
-  commandTweet = "@gdevbot #Project script name\n#{code}"
+  commandTweet = "@gdevbot ##{projectNameElt.textContent} script #{scriptNameElt.textContent}\n#{code}"
   commandTweet = commandTweet.replace ///<mark>///g, '_'
   commandTweet = commandTweet.replace ///</mark>///g, '_'
   commandTweet = commandTweet.replace ///<br>///g, '\n'

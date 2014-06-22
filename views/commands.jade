@@ -14,7 +14,7 @@ block content
   h2#import Import an image
 
   pre
-    .Command @#{botUsername} #<mark>Project</mark> import <mark>name</mark> from <mark>picture URL</mark>
+    .Command @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> import <mark contenteditable="true" data-placeholder="name"></mark> from <mark contenteditable="true" data-placeholder="picture URL"></mark>
     a.Tweet Tweet this
 
   h2#actor Create an actor
@@ -22,13 +22,13 @@ block content
   p An actor has a position and angle, it can display an image and do stuff.
 
   pre
-    .Command @#{botUsername} #<mark>Project</mark> new actor <mark>name</mark>
+    .Command @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> new actor <mark contenteditable="true" data-placeholder="name"></mark>
     a.Tweet Tweet this
 
   p An actor can be a child of another actor.
 
   pre
-    .Command @#{botUsername} #<mark>Project</mark> new actor <mark>name</mark> parent <mark>parent actor</mark>
+    .Command @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> new actor <mark contenteditable="true" data-placeholder="name parent"></mark> <mark contenteditable="true" data-placeholder="parent actor"></mark>
     a.Tweet Tweet this
 
   h2#script Import a script
@@ -36,7 +36,7 @@ block content
   p Scripts are written using <a href="/emoji">emoji code</a>, a concise scripting language.
 
   pre
-    .Command @#{botUsername} #<mark>Project</mark> script <mark>name</mark> <mark>emoji code</mark>
+    .Command @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> script <mark contenteditable="true" data-placeholder="name"></mark> <mark contenteditable="true" data-placeholder="emoji code"></mark>
     a.Tweet Tweet this
 
   p Once you have imported a script, <b>you need to add it to an actor</b>! (see below)
@@ -46,13 +46,13 @@ block content
   p You can attach images and scripts to actors.
 
   pre
-    .Command @#{botUsername} #<mark>Project</mark> add <mark>asset</mark> to <mark>actor</mark>
+    .Command @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> add <mark contenteditable="true" data-placeholder="asset"></mark> to <mark contenteditable="true" data-placeholder="actor"></mark>
     a.Tweet Tweet this
 
   p If you change your mind, you can remove them.
 
   pre
-    .Command @#{botUsername} #<mark>Project</mark> remove <mark>asset</mark> from <mark>actor</mark>
+    .Command @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> remove <mark contenteditable="true" data-placeholder="asset"></mark> from <mark contenteditable="true" data-placeholder="actor"></mark>
     a.Tweet Tweet this
 
   h2#edit Rename, move/reparent, delete
@@ -60,17 +60,17 @@ block content
   p You can rename assets and actors.
 
   pre.NotYetImplemented
-    | @#{botUsername} #<mark>Project</mark> rename <mark>actor</mark> to <mark>new name</mark>
+    | @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> rename <mark contenteditable="true" data-placeholder="actor"></mark> to <mark contenteditable="true" data-placeholder="new name"</mark>
 
   p.
     You can move assets into a different folder and change an actor's parent.<br>
     Folders are automatically created and deleted as needed.
 
   pre.NotYetImplemented
-    | @#{botUsername} #<mark>Project</mark> move <mark>asset</mark> to <mark>folder</mark>
+    | @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> move <mark contenteditable="true" data-placeholder="asset"></mark> to <mark contenteditable="true" data-placeholder="folder"></mark>
 
   pre
-    .Command @#{botUsername} #<mark>Project</mark> reparent <mark>actor</mark> to <mark>parent</mark>
+    .Command @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> reparent <mark contenteditable="true" data-placeholder="actor"></mark> to <mark contenteditable="true" data-placeholder="parent"></mark>
     a.Tweet Tweet this
 
   p.
@@ -79,20 +79,20 @@ block content
   p You can delete them.
 
   pre.NotYetImplemented
-    | @#{botUsername} #<mark>Project</mark> delete <mark>asset or actor</mark> forever
+    | @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> delete <mark contenteditable="true" data-placeholder="asset or actor"></mark> forever
 
   h2#members Allow a friend to edit the project with you
 
   p You can give access to multiple people at once by mentioning them in the same tweet.
 
   pre
-    .Command @#{botUsername} #<mark>Project</mark> allow @<mark>elisee</mark>
+    .Command @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> allow @<mark contenteditable="true" data-placeholder="elisee"></mark>
     a.Tweet Tweet this
 
   p If you change your mind, you can remove someone too.
 
   pre
-    .Command @#{botUsername} #<mark>Project</mark> deny @<mark>elisee</mark>
+    .Command @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> deny @<mark contenteditable="true" data-placeholder="elisee"></mark>
     a.Tweet Tweet this
 
   h2#publish Publish your game
@@ -100,13 +100,13 @@ block content
   p Once your game is ready to be played, upload a 16:10 screenshot.
 
   pre
-    .Command @#{botUsername} #<mark>Project</mark> cover <mark>url</mark>
+    .Command @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> cover <mark contenteditable="true" data-placeholder="url"></mark>
     a.Tweet Tweet this
 
   p And make it live. It'll appear on the <a href="/games">Games page</a>.
 
   pre
-    .Command @#{botUsername} #<mark>Project</mark> publish
+    .Command @#{botUsername} #<mark contenteditable="true" data-placeholder="Project"></mark> publish
     a.Tweet Tweet this
 
   p If you need to take it down, you can use the <code>unpublish</code> command.

@@ -126,9 +126,14 @@ block content
       color: #fff;
     }
 
-    .ScriptEditor:empty:not(:focus):before {
+    .ScriptEditor:empty:not(:focus):before, mark[contenteditable="true"]:empty:not(:focus):before {
       content: attr(data-placeholder);
       opacity: 0.5;
+    }
+
+    mark[contenteditable="true"] {
+      display: inline-block;
+      min-width: 1em;
     }
 
 
@@ -136,7 +141,7 @@ block content
     .PlaygroundFlex
       .EditorContainer
         .ScriptEditorContainer
-          .TweetStart @gdevbot <mark>#Project</mark> script <mark>name</mark>
+          .TweetStart @gdevbot #<mark class="ProjectName" contenteditable="true" data-placeholder="Project"></span></mark> script <mark class="ScriptName" contenteditable="true" data-placeholder="name"></mark>
           .ScriptEditor(contenteditable=true,data-placeholder="Type here & insert emojis by clicking on the right")
         .EditorToolbar
           a(href="#")#TweetScriptButton Tweet this script

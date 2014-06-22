@@ -1,5 +1,12 @@
 for tweet in document.querySelectorAll('.Tweet')
-  commandTweet = tweet.parentElement.querySelector('.Command').innerHTML
-  commandTweet = commandTweet.replace ///<mark>///g, '_'
-  commandTweet = commandTweet.replace ///</mark>///g, '_'
-  tweet.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(commandTweet)
+  console.log tweet
+  tweet.addEventListener 'click', (event) ->
+    for mark in event.currentTarget.parentElement.querySelectorAll('mark')
+      if mark.textContent == ''
+        mark.focus()
+        event.preventDefault()
+        event.stopPropagation()
+        return
+
+    commandTweet = event.currentTarget.parentElement.querySelector('.Command').textContent
+    event.currentTarget.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(commandTweet)
