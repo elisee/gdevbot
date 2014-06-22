@@ -296,13 +296,30 @@ app = express()
 server = require('http').Server app
 io = require('socket.io')(server)
 
+roomWatchers = {}
+
 io.on 'connection', (socket) ->
   socket.on 'subscribeProjectLog', (projectId) ->
     backend.getProjectLog projectId, 100, (err, log) ->
       return socket.disconnect() if err?
       socket.emit 'projectLog', log
-      socket.join projectId.toLowerCase()
 
+      socket.projectId = projectId.toLowerCase()
+      socket.join socket.projectId
+
+      watchers = roomWatchers[socket.projectId]
+      if ! watchers?
+        watchers = { count: 0 }
+        roomWatchers[socket.projectId] = watchers
+      watchers.count++
+      io.to(socket.projectId).emit 'watchers', watchers.count
+
+  socket.on 'disconnect', ->
+    if socket.projectId?
+      watchers = roomWatchers[socket.projectId]
+      watchers.count--
+      io.to(socket.projectId).emit 'watchers', watchers.count
+    return
 
 app.set 'view engine', 'jade'
 

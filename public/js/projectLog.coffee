@@ -1,5 +1,6 @@
 sidebarElement = document.getElementsByTagName('aside')[0]
 iframeElement = document.getElementsByTagName('iframe')[0]
+watchersElement = document.getElementById('Watchers')
 
 logElement = sidebarElement.querySelector('.Log')
 
@@ -13,6 +14,9 @@ reloadGame = -> iframeElement.contentWindow.location.reload true
 socket = io()
 
 projectLogLength = null
+
+socket.on 'watchers', (watchers) ->
+  watchersElement.textContent = "— #{watchers} watchers"
 
 socket.on 'projectLog', (log) ->
   html = ""
