@@ -201,7 +201,7 @@ module.exports = backend =
     request { url, encoding: null }, (err, response, body) ->
       return callback new Error 'Failed to download cover' if err? or response.statusCode != 200
 
-      gm(body).resize(1280,800,'>').write path.join(projectsPath, project.id.toLowerCase(), "cover.png"), (err) ->
+      gm(body).adjoin().resize(1280,800,'>').write path.join(projectsPath, project.id.toLowerCase(), "cover.png"), (err) ->
         if err?
           utils.botlog "[#{project.id}] Error importing cover from #{url}:"
           utils.botlog JSON.stringify err, null, 2
@@ -264,7 +264,7 @@ module.exports = backend =
         return callback new Error "Name already used by an asset of type \"#{existingAsset.type}\""
 
       # TODO: Implement support for other asset types
-      gm(body).resize(2048,2048,'>').write path.join(projectsPath, project.id.toLowerCase(), 'assets', "#{name}.png"), (err) ->
+      gm(body).adjoin().resize(2048,2048,'>').write path.join(projectsPath, project.id.toLowerCase(), 'assets', "#{name}.png"), (err) ->
         if err?
           utils.botlog "[#{project.id}] Error processing import of #{url}:"
           utils.botlog JSON.stringify err, null, 2
