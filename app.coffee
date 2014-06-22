@@ -16,7 +16,7 @@ baseURL += ":#{config.publicPort}" if config.publicPort != 80
 parseCommand = (text, tweet, callback) ->
   command = {}
 
-  tokens = text.split ' '
+  tokens = text.replace(/\r/g, '').split(/[ \n]+/)
   command.type = tokens[0]
 
   if tweet.entities?.user_mentions?.length != 1 and tokens[0] not in ['allow', 'deny']

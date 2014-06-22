@@ -2,6 +2,7 @@
 fixedCharCodeAt = (str, idx) ->
   idx = idx or 0
   code = str.charCodeAt(idx)
+  return false if code == 160 # non-breaking space
   hi = undefined
   low = undefined
   
