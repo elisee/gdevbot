@@ -81,7 +81,7 @@ makeScriptTweet = (src, html=false) ->
   if html
     "@gdevbot #<mark>Project</mark> script <mark>name</mark> #{code}"
   else
-    "@gdevbot #[Project] script [name] #{code}"
+    "@gdevbot #Project script name #{code}"
   
 # Taken from http://www.456bereastreet.com/archive/201105/get_element_text_including_alt_text_for_images_with_javascript/
 getElementText = (el) ->
