@@ -5,6 +5,11 @@ generatedScriptPreviewElt = document.querySelector('.GeneratedScriptPreview')
 projectNameElt = document.querySelector('.ScriptEditorContainer .ProjectName')
 scriptNameElt = document.querySelector('.ScriptEditorContainer .ScriptName')
 
+updateTitle = (event) -> document.title = "#{scriptNameElt.textContent or "name"} ##{projectNameElt.textContent or "Project"}"
+
+projectNameElt.addEventListener 'input', updateTitle
+scriptNameElt.addEventListener 'input', updateTitle
+
 emojiHTMLbyShortcodes = {}
 for group in buttonsElt.children
   for buttonElt in group.children
