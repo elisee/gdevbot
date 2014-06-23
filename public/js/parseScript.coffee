@@ -257,7 +257,7 @@ parseScript = (name, content, callback) ->
     charCode = fixedCharCodeAt content, i
     if charCode == false
       # Ignore
-    else if charCode >= 128 and charCode not in [ 0x2260, 2264, 0x2265, 0x221a ]
+    else if charCode >= 128 and charCode not in [ 0x2260, 0x2264, 0x2265, 0x221a ]
       ### ≠ ≤ ≥ ###
       makeToken()
       acc = charCode
