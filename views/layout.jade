@@ -4,7 +4,7 @@ html
     title 
       block title
       |  &mdash; @#{botUsername}
-    meta(name="viewport",content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, user-scalable=0")
+    block extrahead
     link(href='http://fonts.googleapis.com/css?family=Roboto:400,700',rel='stylesheet',type='text/css')
     style.
       * {
@@ -139,7 +139,7 @@ html
         display: inline-block;
         min-width: 1em;
       }
-      
+
       span[contenteditable="true"]:empty:not(:focus):before, mark[contenteditable="true"]:empty:not(:focus):before {
         content: attr(data-placeholder);
         opacity: 0.5;
